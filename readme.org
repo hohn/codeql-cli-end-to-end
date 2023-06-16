@@ -1,206 +1,229 @@
 * End-to-end demo of CodeQL command line usage
 
-   1. Want to run analyses (command line use - github)
-      1. Get collection of databases (already handy)
-         1. [X] Get https://github.com/rvermeulen/codeql-workshop-vulnerable-linux-driver
-            #+BEGIN_SRC text
-              cd ~/local
-              git clone git@github.com:rvermeulen/codeql-workshop-vulnerable-linux-driver.git
-              cd codeql-workshop-vulnerable-linux-driver/
-              unzip vulnerable-linux-driver.zip
-              tree -L 2 vulnerable-linux-driver-db/
-              vulnerable-linux-driver-db/
-              ├── codeql-database.yml
-              ├── db-cpp
-              │   ├── default
-              │   ├── semmlecode.cpp.dbscheme
-              │   └── semmlecode.cpp.dbscheme.stats
-              └── src.zip
+** Run analyses
+*** Get collection of databases (already handy)
+**** DONE Get https://github.com/rvermeulen/codeql-workshop-vulnerable-linux-driver
+     #+begin_src text
+       cd ~/local
+       git clone git@github.com:rvermeulen/codeql-workshop-vulnerable-linux-driver.git
+       cd codeql-workshop-vulnerable-linux-driver/
+       unzip vulnerable-linux-driver.zip
+       tree -L 2 vulnerable-linux-driver-db/
+       vulnerable-linux-driver-db/
+       ├── codeql-database.yml
+       ├── db-cpp
+       │   ├── default
+       │   ├── semmlecode.cpp.dbscheme
+       │   └── semmlecode.cpp.dbscheme.stats
+       └── src.zip
 
-              3 directories, 4 files
-            #+END_SRC
-         2. [X] Quick check using VS Code.  Same steps will repeat:
-            1. select DB
-            2. select query
-            3. run query
-            4. view results
+       3 directories, 4 files
+     #+end_src
+**** DONE Quick check using VS Code.  Same steps will repeat:
+***** select DB
+***** select query
+***** run query
+***** view results
+**** DONE Install codeql
+***** Full docs:
+      https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli
+      https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
+***** In short:
+      #+begin_src sh
+        cd ~/local/codeql-cli-end-to-endw
+        # Decide on version / os via browser, then: 
+        wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-osx64.tar.gz
 
-         3. [ ] Install codeql
-            - Full docs:
-              https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli
-              https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
-              In short:
-              #+BEGIN_SRC sh
-                cd ~/local/codeql-cli-end-to-endw
-                # Decide on version / os via browser, then: 
-                wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-osx64.tar.gz
+        # Fix attributes on mac
+        if [ `uname` = Darwin ] ; then
+            xattr -c *.tar.gz
+        fi
 
-                # Fix attributes on mac
-                if [ `uname` = Darwin ] ; then
-                    xattr -c *.tar.gz
-                fi
+        # Extract
+        tar zxf ./codeql-bundle-osx64.tar.gz
 
-                # Extract
-                tar zxf ./codeql-bundle-osx64.tar.gz
+        # Check binary
+        pwd
+        # /Users/hohn/local/codeql-cli-end-to-end
+        ./codeql/codeql --version
+        # CodeQL command-line toolchain release 2.13.4.
+        # Copyright (C) 2019-2023 GitHub, Inc.
+        # Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+        #    Analysis results depend critically on separately distributed query and
+        #    extractor modules. To list modules that are visible to the toolchain,
+        #    use 'codeql resolve qlpacks' and 'codeql resolve languages'.
 
-                # Check binary
-                pwd
-                # /Users/hohn/local/codeql-cli-end-to-end
+        # Check packs
+        0:$ ./codeql/codeql resolve qlpacks |head -5
+        # codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)
+        # codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)
+        # codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)
+        # codeql/csharp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-all/0.6.3)
+        # codeql/csharp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-examples/0.0.0) 
 
-                ./codeql/codeql --version
-                # CodeQL command-line toolchain release 2.13.4.
-                # Copyright (C) 2019-2023 GitHub, Inc.
-                # Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
-                #    Analysis results depend critically on separately distributed query and
-                #    extractor modules. To list modules that are visible to the toolchain,
-                #    use 'codeql resolve qlpacks' and 'codeql resolve languages'.
+        # Fix the path
+        export PATH=$(pwd -P)/codeql:"$PATH"
 
-                # Check packs
-                0:$ ./codeql/codeql resolve qlpacks |head -5
-                # codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)
-                # codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)
-                # codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)
-                # codeql/csharp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-all/0.6.3)
-                # codeql/csharp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-examples/0.0.0) 
+        # Check languages
+        codeql resolve languages | head -5
+        # go (/Users/hohn/local/codeql-cli-end-to-end/codeql/go)
+        # python (/Users/hohn/local/codeql-cli-end-to-end/codeql/python)
+        # java (/Users/hohn/local/codeql-cli-end-to-end/codeql/java)
+        # html (/Users/hohn/local/codeql-cli-end-to-end/codeql/html)
+        # xml (/Users/hohn/local/codeql-cli-end-to-end/codeql/xml)
+      #+end_src
+***** A more fancy version
+      #+begin_src sh
+        # Reference urls:
+        # https://github.com/github/codeql-cli-binaries/releases/download/v2.8.0/codeql-linux64.zip
+        # https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.8.0.zip
+        #
+        # grab -- retrieve and extract codeql cli and library
+        # Usage: grab version url prefix
+        grab() {
+            version=$1; shift
+            platform=$1; shift
+            prefix=$1; shift
+            mkdir -p $prefix/codeql-$version &&
+                cd $prefix/codeql-$version || return
 
-                # Fix the path
-                export PATH=$(pwd -P)/codeql:"$PATH"
+            # Get cli
+            wget "https://github.com/github/codeql-cli-binaries/releases/download/$version/codeql-$platform.zip"
+            # Get lib
+            wget "https://github.com/github/codeql/archive/refs/tags/codeql-cli/$version.zip"
+            # Fix attributes
+            if [ `uname` = Darwin ] ; then
+                xattr -c *.zip
+            fi
+            # Extract
+            unzip -q codeql-$platform.zip
+            unzip -q $version.zip
+            # Rename library directory for VS Code
+            mv codeql-codeql-cli-$version/ ql
+            # remove archives?
+            # rm codeql-$platform.zip
+            # rm $version.zip
+        }
 
-                # Check languages
-                codeql resolve languages | head -5
-                # go (/Users/hohn/local/codeql-cli-end-to-end/codeql/go)
-                # python (/Users/hohn/local/codeql-cli-end-to-end/codeql/python)
-                # java (/Users/hohn/local/codeql-cli-end-to-end/codeql/java)
-                # html (/Users/hohn/local/codeql-cli-end-to-end/codeql/html)
-                # xml (/Users/hohn/local/codeql-cli-end-to-end/codeql/xml)
+        grab v2.7.6 osx64 $HOME/local
+        grab v2.8.3 osx64 $HOME/local
+        grab v2.8.4 osx64 $HOME/local
 
-              #+END_SRC
+        grab v2.6.3 linux64 /opt
 
-              A more fancy version:
-              #+BEGIN_SRC sh
-                # Reference urls:
-                # https://github.com/github/codeql-cli-binaries/releases/download/v2.8.0/codeql-linux64.zip
-                # https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.8.0.zip
-                #
-                # grab -- retrieve and extract codeql cli and library
-                # Usage: grab version url prefix
-                grab() {
-                    version=$1; shift
-                    platform=$1; shift
-                    prefix=$1; shift
-                    mkdir -p $prefix/codeql-$version &&
-                        cd $prefix/codeql-$version || return
+        grab v2.6.3 osx64 $HOME/local
+        grab v2.4.6 osx64 $HOME/local
+      #+end_src
+***** Most flexible in use, but more initial setup: gh, the GitHub
+      command-line tool from https://github.com/cli/cli
 
-                    # Get cli
-                    wget "https://github.com/github/codeql-cli-binaries/releases/download/$version/codeql-$platform.zip"
-                    # Get lib
-                    wget "https://github.com/github/codeql/archive/refs/tags/codeql-cli/$version.zip"
-                    # Fix attributes
-                    if [ `uname` = Darwin ] ; then
-                        xattr -c *.zip
-                    fi
-                    # Extract
-                    unzip -q codeql-$platform.zip
-                    unzip -q $version.zip
-                    # Rename library directory for VS Code
-                    mv codeql-codeql-cli-$version/ ql
-                    # remove archives?
-                    # rm codeql-$platform.zip
-                    # rm $version.zip
-                }
+****** gh api repos/{owner}/{repo}/releases
+       https://cli.github.com/manual/gh_api
+****** gh extension create
+       https://cli.github.com/manual/gh_extension
+****** gh codeql extension
+       https://github.com/github/gh-codeql
+****** gh gist list
+       https://cli.github.com/manual/gh_gist_list
 
-                grab v2.7.6 osx64 $HOME/local
-                grab v2.8.3 osx64 $HOME/local
-                grab v2.8.4 osx64 $HOME/local
+       #+begin_src text
+         0:$ gh codeql
+         GitHub command-line wrapper for the CodeQL CLI.
+       #+end_src
+**** TODO Install pack dependencies
+***** Full docs
+      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
+      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install
+***** View installed docs via =-h= flag, highly recommended
+      #+begin_src sh
+        # Overview
+        codeql -h
 
-                grab v2.6.3 linux64 /opt
+        # Sub 1
+        codeql pack -h
 
-                grab v2.6.3 osx64 $HOME/local
-                grab v2.4.6 osx64 $HOME/local
-              #+END_SRC
+        # Sub 2
+        codeql pack install -h
+      #+end_src
+***** In short
+****** create the qlpack files if not there
+       #+begin_src sh
 
-            - Most flexible in use, but more initial setup: gh, the GitHub
-              command-line tool from https://github.com/cli/cli
+       #+end_src
+****** install each pack's dependencies via
+       =codeql pack install=
+       #+begin_src sh
+         pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+         find . -name "qlpack.yml"
+         # ./queries/qlpack.yml
+         # ./solutions/qlpack.yml
+         # ./common/qlpack.yml
 
-              gh api repos/{owner}/{repo}/releases
-              https://cli.github.com/manual/gh_api
+         codeql pack install --no-strict-mode queries/
+         # Dependencies resolved. Installing packages...
+         # Install location: /Users/hohn/.codeql/packages
+         # Nothing to install.
+         # Package install location: /Users/hohn/.codeql/packages
+         # Nothing downloaded.
 
-              gh extension create
-              https://cli.github.com/manual/gh_extension
-
-              gh codeql extension
-              https://github.com/github/gh-codeql
-              install codeql cli and library?
-
-              gh gist list
-              https://cli.github.com/manual/gh_gist_list
-
-              #+BEGIN_SRC text
-                0:$ gh codeql
-                GitHub command-line wrapper for the CodeQL CLI.
-              #+END_SRC
-
-         4. [ ] Install pack dependencies
-            - Full docs
-              https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
-              
-            
-      2. Run queries
-         1. Individual: 1 database -> N sarif files
-         2. Use directory of queries: 1 database -> 1 sarif file (least effort)
-         3. Use suite: 1 database -> 1 sarif file (more flexible, more effort)
-         4. Include versioning:
-            1. codeql cli
-            2. query set version
-         Checks:
-         1. Will include e.g.,
-            #+BEGIN_SRC text
-              codeql database analyze --format=sarif-latest --rerun   \
-                     --output $QUERY_RES_SARIF                        \
-                     --search-path $QLGIT                             \
-                     -j6                                              \
-                     --ram=24000                                      \
-                     --                                               \
-                     $DB                                              \
-                     $QLQUERY
-            #+END_SRC
-         2. Will include recommendations, e.g., 32 G ram, 4-6 cores.
-         3. For building DBs: Common case: 15 minutes for || cpp compilation, can
-            be 2 h with codeql.
-               
-   2. Want to review results
-      1. sarif viewer plugin
-      2. raw sarif with =jq=
-      3. sarif-cli
-         1. dump
-         2. sql conversion
-
-   3. Running sequence
-      1. Smallest query suite (security suite).
-      2. Check results.
-         1. Lots of result (> 5000) -> cli review via compiler-style dump.
-         2. Medium result sets (~ 2000) (sarif review plugin, can only load 5000
-            results) 
-         3. Few results (sarif review plugin, can only load 5000 results)
-      3. Expand query 
-
-   4. Compare results.
-      1. sarif-cli using compiler-style dump.
+         for sub in `find . -name "qlpack.yml" | sed s@qlpack.yml@@g;`
+         do
+             codeql pack install --no-strict-mode $sub
+         done
+       #+end_src
+*** Run queries
+**** Individual: 1 database -> N sarif files
+**** Use directory of queries: 1 database -> 1 sarif file (least effort)
+**** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
+**** Include versioning:
+***** codeql cli
+***** query set version
+      Checks:
+**** Will include e.g.,
+     #+begin_src text
+       codeql database analyze --format=sarif-latest --rerun   \
+       --output $QUERY_RES_SARIF                        \
+       --search-path $QLGIT                             \
+       -j6                                              \
+       --ram=24000                                      \
+       --                                               \
+       $DB                                              \
+       $QLQUERY
+     #+end_src
+**** Will include recommendations, e.g., 32 G ram, 4-6 cores.
+**** For building DBs: Common case: 15 minutes for || cpp compilation, can
+     be 2 h with codeql.
+** Review results
+*** sarif viewer plugin
+*** raw sarif with =jq=
+*** sarif-cli
+**** dump
+**** sql conversion
+** Running sequence
+*** Smallest query suite (security suite).
+*** Check results.
+**** Lots of result (> 5000) -> cli review via compiler-style dump.
+**** Medium result sets (~ 2000) (sarif review plugin, can only load 5000
+     results) 
+**** Few results (sarif review plugin, can only load 5000 results)
+*** Expand query 
+** Compare results.
+*** sarif-cli using compiler-style dump.
 
 * Short end-to-end illustration
-   1. Overall procedure
-   2. Command-line use
-      1. For 3.2 also using sarif-cli
-   3. sarif viewer plugin
+  1. Overall procedure
+  2. Command-line use
+     1. For 3.2 also using sarif-cli
+  3. sarif viewer plugin
 
-      https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
+     https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
 
-      Sarif Viewer
-      v3.3.7
-      Microsoft DevLabs
-      microsoft.com
-      53,335
-      (1)
+     Sarif Viewer
+     v3.3.7
+     Microsoft DevLabs
+     microsoft.com
+     53,335
+     (1)
 
-   4. Details on query suite use (3. Use suite: 1 database -> 1 sarif file (more
-      flexible, more effort))
+  4. Details on query suite use (3. Use suite: 1 database -> 1 sarif file (more
+     flexible, more effort))
