@@ -114,8 +114,8 @@
         grab v2.6.3 osx64 $HOME/local
         grab v2.4.6 osx64 $HOME/local
       #+end_src
-***** Most flexible in use, but more initial setup: gh, the GitHub
-      command-line tool from https://github.com/cli/cli
+***** Most flexible in use, but more initial setup
+      =gh=, the GitHub command-line tool from https://github.com/cli/cli
 
 ****** gh api repos/{owner}/{repo}/releases
        https://cli.github.com/manual/gh_api
@@ -146,12 +146,49 @@
         codeql pack install -h
       #+end_src
 ***** In short
-****** create the qlpack files if not there
+****** Create the qlpack
+       Create the qlpack files if not there, one per directory.  In this project,
+       that's already done:
        #+begin_src sh
-
+         0:$ find codeql-workshop-vulnerable-linux-driver  -name "qlpack.yml" 
+         codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+         codeql-workshop-vulnerable-linux-driver/solutions/qlpack.yml
+         codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
        #+end_src
-****** install each pack's dependencies via
-       =codeql pack install=
+       For example:
+       : cat codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+       shows
+       #+BEGIN_SRC yaml
+         ---
+         library: false
+         name: queries
+         version: 0.0.1
+         dependencies:
+           codeql/cpp-all: ^0.7.0
+           common: "*"
+       #+END_SRC
+       So the queries directory does not contain a library, but it depends on one,
+       : cat codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
+       #+BEGIN_SRC yaml
+         ---
+         library: true
+         name: common
+         version: 0.0.1
+         dependencies:
+           codeql/cpp-all: 0.7.0
+       #+END_SRC
+       
+****** Install each pack's dependencies
+       The first time you install dependencies, it's a good idea to do this
+       menually, per =qlpack.yml= file, and deal with any errors that may occur.
+
+       #+BEGIN_SRC sh
+         pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+         codeql pack install --no-strict-mode queries/
+       #+END_SRC
+
+       After the initial setup and for automation, install each pack's
+       dependencies via a loop: =codeql pack install=
        #+begin_src sh
          pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
          find . -name "qlpack.yml"
