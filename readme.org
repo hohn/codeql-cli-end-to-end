@@ -130,7 +130,7 @@
          0:$ gh codeql
          GitHub command-line wrapper for the CodeQL CLI.
        #+end_src
-**** TODO Install pack dependencies
+**** Install pack dependencies
 ***** Full docs
       https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
       https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install
@@ -210,6 +210,52 @@
        #+end_src
 *** Run queries
 **** Individual: 1 database -> N sarif files
+     #+BEGIN_SRC sh
+       #* Set environment
+       PROJ=$HOME/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       DB=$PROJ/vulnerable-linux-driver-db
+       QLQUERY=$PROJ/solutions/BufferOverflow.ql
+       QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD).sarif
+
+       #* Run query
+       pushd $PROJ
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $QUERY_RES_SARIF                        \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $DB                                              \
+              $QLQUERY
+
+       # if you get
+           # fatal error occurred: Error initializing the IMB disk cache: the cache
+           # directory is already locked by another running process. Only one instance of
+           # the IMB can access a cache directory at a time. The lock file is located at
+           # /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable-linux-driver-db/db-cpp/default/cache/.lock
+       #  exit vs code and try again
+     #+END_SRC
+
+     And after some time:
+
+     #+BEGIN_SRC text
+       BufferOverflow.ql: [1/1 eval 1.8s] Results written to solutions/BufferOverfl
+       Shutting down query evaluator.
+       Interpreting results.
+     #+END_SRC
+
+     #+BEGIN_SRC sh
+       echo The query $QLQUERY
+       echo run on $DB
+       echo produced output in $QUERY_RES_SARIF:
+       head -5 $QUERY_RES_SARIF
+       # {
+       #   "$schema" : "https://json.schemastore.org/sarif-2.1.0.json",
+       #   "version" : "2.1.0",
+       #   "runs" : [ {
+       #     "tool" : {
+       # ...
+     #+END_SRC
+
 **** Use directory of queries: 1 database -> 1 sarif file (least effort)
 **** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
 **** Include versioning:
