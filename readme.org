@@ -360,8 +360,7 @@
 **** For building DBs: Common case: 15 minutes for || cpp compilation, can
      be 2 h with codeql.
 ** Review results
-*** TODO sarif viewer plugin
-    XX:
+*** SARIF viewer plugin
 **** Install plugin in VS Code
      https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
 
@@ -371,6 +370,41 @@
      microsoft.com
      53,335
      (1)
+
+**** Review
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end
+       find . -maxdepth 2 -name "*.sarif" 
+     #+END_SRC
+     Pick one in VS Code.  Either
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       cd codeql-workshop-vulnerable-linux-driver/
+       code d548189.sarif
+     #+END_SRC
+     or manually.
+
+     We need the source.
+
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       git submodule init
+       git submodule update
+     #+END_SRC
+
+     When we review, VS Code will ask for the path.
+
+     #+BEGIN_SRC sh
+       cd /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable_linux_driver
+       ls src/vuln_driver.c
+     #+END_SRC
+
+     #+RESULTS:
+     : src/vuln_driver.c
+
+     Reviewing looks as follows.
+     #+ATTR_HTML: :alt sarif viewer :width 90%
+     [[./img/sarif-view-1.png]]
 
 *** TODO raw sarif with =jq=
      XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
