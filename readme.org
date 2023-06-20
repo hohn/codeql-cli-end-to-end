@@ -2,10 +2,10 @@
 
 ** Run analyses
 *** Get collection of databases (already handy)
-**** DONE Get https://github.com/rvermeulen/codeql-workshop-vulnerable-linux-driver
+**** DONE Get https://github.com/hohn/codeql-workshop-vulnerable-linux-driver
      #+begin_src text
        cd ~/local
-       git clone git@github.com:rvermeulen/codeql-workshop-vulnerable-linux-driver.git
+       git clone git@github.com:hohn/codeql-workshop-vulnerable-linux-driver.git
        cd codeql-workshop-vulnerable-linux-driver/
        unzip vulnerable-linux-driver.zip
        tree -L 2 vulnerable-linux-driver-db/
@@ -256,7 +256,38 @@
        # ...
      #+END_SRC
 
-**** Use directory of queries: 1 database -> 1 sarif file (least effort)
+     And run another, get another sarif file.  Bad idea in general, but good for
+     debugging timing etc.
+
+     #+BEGIN_SRC sh
+       #* Use prior variable settings
+
+       #* Run query
+       pushd $PROJ
+       qo=$PROJ/$(cd $PROJ && git rev-parse --short HEAD)-UseAfterFree.sarif
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $qo                                     \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $DB                                              \
+              $PROJ/solutions/UseAfterFree.ql
+       popd
+
+       echo "Query results in $qo"
+       head -5 "$qo"
+
+       # Query results in /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+       # {
+       #   "$schema" : "https://json.schemastore.org/sarif-2.1.0.json",
+       #   "version" : "2.1.0",
+       #   "runs" : [ {
+       #     "tool" : {
+     #+END_SRC
+
+
+**** NEXT Use directory of queries: 1 database -> 1 sarif file (least effort)
+
 **** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
 **** Include versioning:
 ***** codeql cli
