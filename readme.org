@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+#+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
+
 * End-to-end demo of CodeQL command line usage
 
 ** Run analyses
@@ -360,6 +363,9 @@
 **** For building DBs: Common case: 15 minutes for || cpp compilation, can
      be 2 h with codeql.
 ** Review results
+*** SARIF Documentation
+    The standard is defined at
+    https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html 
 *** SARIF viewer plugin
 **** Install plugin in VS Code
      https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
@@ -406,8 +412,44 @@
      #+ATTR_HTML: :alt sarif viewer :width 90%
      [[./img/sarif-view-1.png]]
 
-*** TODO raw sarif with =jq=
-     XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
+*** View raw sarif with =jq=
+    List the SARIF files again 
+    #+BEGIN_SRC sh
+      cd ~/local/codeql-cli-end-to-end
+      find . -maxdepth 2 -name "*.sarif" 
+    #+END_SRC
+
+    #+RESULTS:
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif                |
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif   |
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-BufferOverflow.sarif |
+
+    The CodeQL version
+    #+BEGIN_SRC sh :exports both
+      cd ~/local/codeql-cli-end-to-end
+      jq '.runs | .[0] | .tool.driver.semanticVersion ' < ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
+    #+END_SRC
+
+    #+RESULTS:
+    : 2.13.4
+
+    The names of rules processed
+    #+BEGIN_SRC sh :exports both
+      cd ~/local/codeql-cli-end-to-end
+      jq '.runs | .[] | .tool.driver.rules | .[] | .name ' < ./codeql-workshop-vulnerable-linux-driver/d548189.sarif
+    #+END_SRC
+
+    #+RESULTS:
+    | cpp/buffer_overflow |
+    | cpp/use_after_free  |
+
+*** TODO View raw sarif with =jq= and fzf    
+    Install the fuzzy finder
+    : brew install fzf
+    or =apt-get=/=yum= on linux
+
+    XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
+
 
 *** TODO sarif-cli
 **** TODO dump
