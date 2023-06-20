@@ -215,7 +215,7 @@
        PROJ=$HOME/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
        DB=$PROJ/vulnerable-linux-driver-db
        QLQUERY=$PROJ/solutions/BufferOverflow.ql
-       QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD).sarif
+       QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD)-BufferOverflow.sarif
 
        #* Run query
        pushd $PROJ
@@ -286,25 +286,45 @@
      #+END_SRC
 
 
-**** NEXT Use directory of queries: 1 database -> 1 sarif file (least effort)
+**** Use directory of queries: 1 database -> 1 sarif file (least effort)
+     #+BEGIN_SRC sh
+       #* Set environment
+       P1_PROJ=$HOME/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       P1_DB=$PROJ/vulnerable-linux-driver-db
+       P1_QLQUERYDIR=$PROJ/solutions/
+       P1_QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD).sarif
 
-**** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
+       #* check variables
+       set | grep P1_
+
+       #* Run query
+       pushd $PROJ
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $P1_QUERY_RES_SARIF                     \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $P1_DB                                           \
+              $P1_PROJ/solutions/
+     #+END_SRC
+
+     We can compare SARIF result sizes:
+     #+BEGIN_SRC sh
+       ls -la "$qo" $P1_QUERY_RES_SARIF $QUERY_RES_SARIF
+     #+END_SRC
+
+     And for these tiny results, it's mostly metadata:
+     #+BEGIN_SRC text
+       -rw-r--r-- 1 hohn staff 29K Jun 20 10:06 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189-BufferOverflow.sarif
+       -rw-r--r-- 1 hohn staff 33K Jun 20 10:02 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189.sarif
+       -rw-r--r-- 1 hohn staff 28K Jun 20 09:51 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+     #+END_SRC
+     
+**** TODO Use suite: 1 database -> 1 sarif file (more flexible, more effort)
 **** Include versioning:
 ***** codeql cli
 ***** query set version
       Checks:
-**** Will include e.g.,
-     #+begin_src text
-       codeql database analyze --format=sarif-latest --rerun   \
-       --output $QUERY_RES_SARIF                        \
-       --search-path $QLGIT                             \
-       -j6                                              \
-       --ram=24000                                      \
-       --                                               \
-       $DB                                              \
-       $QLQUERY
-     #+end_src
-**** Will include recommendations, e.g., 32 G ram, 4-6 cores.
 **** For building DBs: Common case: 15 minutes for || cpp compilation, can
      be 2 h with codeql.
 ** Review results
