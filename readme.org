@@ -353,37 +353,16 @@
 
      #+INCLUDE: "./custom-suite-1.qls" src yaml
 
-**** Include versioning:
-***** codeql cli
-***** query set version
+**** TODO Include versioning:
+***** TODO codeql cli
+***** TODO query set version
       Checks:
 **** For building DBs: Common case: 15 minutes for || cpp compilation, can
      be 2 h with codeql.
 ** Review results
-     XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
-
-*** sarif viewer plugin
-*** raw sarif with =jq=
-*** sarif-cli
-**** dump
-**** sql conversion
-** Running sequence
-*** Smallest query suite (security suite).
-*** Check results.
-**** Lots of result (> 5000) -> cli review via compiler-style dump.
-**** Medium result sets (~ 2000) (sarif review plugin, can only load 5000
-     results) 
-**** Few results (sarif review plugin, can only load 5000 results)
-*** Expand query 
-** Compare results.
-*** sarif-cli using compiler-style dump.
-
-* Short end-to-end illustration
-  1. Overall procedure
-  2. Command-line use
-     1. For 3.2 also using sarif-cli
-  3. sarif viewer plugin
-
+*** TODO sarif viewer plugin
+    XX:
+**** Install plugin in VS Code
      https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
 
      Sarif Viewer
@@ -393,5 +372,19 @@
      53,335
      (1)
 
-  4. Details on query suite use (3. Use suite: 1 database -> 1 sarif file (more
-     flexible, more effort))
+*** TODO raw sarif with =jq=
+     XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
+
+*** TODO sarif-cli
+**** TODO dump
+**** TODO sql conversion
+** Running sequence
+*** Smallest query suite (security suite).
+*** Check results.
+**** Lots of result (> 5000) -> cli review via compiler-style dump.
+**** Medium result sets (~ 2000) (sarif review plugin, can only load 5000
+     results) 
+**** Few results (sarif review plugin, can only load 5000 results)
+*** Expand query 
+** Compare results.
+*** sarif-cli using compiler-style dump
