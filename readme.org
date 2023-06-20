@@ -285,7 +285,6 @@
        #     "tool" : {
      #+END_SRC
 
-
 **** Use directory of queries: 1 database -> 1 sarif file (least effort)
      #+BEGIN_SRC sh
        #* Set environment
@@ -298,7 +297,7 @@
        set | grep P1_
 
        #* Run query
-       pushd $PROJ
+       pushd $P1_PROJ
        codeql database analyze --format=sarif-latest --rerun   \
               --output $P1_QUERY_RES_SARIF                     \
               -j6                                              \
@@ -306,6 +305,7 @@
               --                                               \
               $P1_DB                                           \
               $P1_PROJ/solutions/
+       popd
      #+END_SRC
 
      We can compare SARIF result sizes:
@@ -320,7 +320,39 @@
        -rw-r--r-- 1 hohn staff 28K Jun 20 09:51 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
      #+END_SRC
      
-**** TODO Use suite: 1 database -> 1 sarif file (more flexible, more effort)
+**** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
+     A useful, general purpose template is at
+     https://github.com/rvermeulen/codeql-example-project-layout.
+
+***** Documentation
+       - [[https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/built-in-codeql-query-suites][built-in-codeql-query-suites]]
+       - [[https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/creating-codeql-query-suites][creating-codeql-query-suites]]
+         Important:
+
+         You must add at least one query, queries, or qlpack instruction to your
+         suite definition, otherwise no queries will be selected. If the suite
+         contains no further instructions, all the queries found from the list of
+         files, in the given directory, or in the named CodeQL pack are
+         selected. If there are further filtering instructions, only queries that
+         match the constraints imposed by those instructions will be selected. 
+
+         Also, a suite definition must be /in/ a codeql pack.
+***** In short
+     #+BEGIN_SRC sh
+       codeql resolve qlpacks | grep cpp
+
+       # Copy query suite into the pack
+       cd ~/local/codeql-cli-end-to-end
+       cp custom-suite-1.qls codeql-workshop-vulnerable-linux-driver/solutions/
+       codeql resolve queries \
+              codeql-workshop-vulnerable-linux-driver/solutions/custom-suite-1.qls
+     #+END_SRC
+
+     #+RESULTS:
+     : /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/solutions/UseAfterFree.ql
+
+     #+INCLUDE: "./custom-suite-1.qls" src yaml
+
 **** Include versioning:
 ***** codeql cli
 ***** query set version
@@ -328,6 +360,8 @@
 **** For building DBs: Common case: 15 minutes for || cpp compilation, can
      be 2 h with codeql.
 ** Review results
+     XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
+
 *** sarif viewer plugin
 *** raw sarif with =jq=
 *** sarif-cli

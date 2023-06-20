@@ -1,0 +1,32 @@
+# 
+# Taken from
+# codeql-v2.12.3/codeql/qlpacks/codeql/suite-helpers/0.4.3/code-scanning-selectors.yml
+# and modified
+# 
+- description: Security sample queries
+- queries: .
+# - qlpack: some-pack-cpp
+- include:
+    kind:
+    # UseAfterFree
+    - problem
+    # # BufferOverflow
+    # - path-problem
+    # precision:
+    # - high
+    # - very-high
+    # problem.severity:
+    # - error
+    # tags contain:
+    # - security
+
+# - exclude:
+#     deprecated: //
+# - exclude:
+#     query path:
+#       - /^experimental\/.*/
+#       - Metrics/Summaries/FrameworkCoverage.ql
+#       - /Diagnostics/Internal/.*/
+# - exclude:
+#     tags contain:
+#       - modelgenerator    
