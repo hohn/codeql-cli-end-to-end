@@ -36,7 +36,7 @@
       https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
 ***** In short:
       #+begin_src sh
-        cd ~/local/codeql-cli-end-to-endw
+        cd ~/local/codeql-cli-end-to-end
         # Decide on version / os via browser, then: 
         wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-osx64.tar.gz
 
@@ -473,6 +473,7 @@
        git clone git@github.com:hohn/sarif-cli.git
 
        cd ~/local/codeql-cli-end-to-end/sarif-cli
+git checkout 203343df
        python3.9 -m venv .venv
        . .venv/bin/activate
 
@@ -505,7 +506,6 @@
      sarif-results-summary
      sarif-to-dot
      #+end_example
-
      
      The simplest one just list the source files found during analysis:
      #+BEGIN_SRC sh :exports both :results output
@@ -647,7 +647,47 @@
                ^^^^^^^^^^^^^^
      #+end_example
 
-**** TODO SQL conversion
+**** SQL conversion -- not compatible with codeql v2.13.4
+     The ultimate purpose of the sarif-cli is producing CSV files for import into
+     SQL databases.  This requires a completely defined static structure, without
+     any optional fields.  The internals of the tool are beyond the scope of this
+     workshop, some details are their external effects are important:
+
+     1. a (very large and comprehensive) type signature is defined in sarif-cli
+     2. sarif files that have extra fields not in the signature will produce warnings
+     3. sarif files that are missing fields from the signature will produce a fatal 
+        error.  A message will be printed and the scripts will abort.
+     4. Sometimes, sarif files will have a field but no content.  For a number of
+        these, dummy values are inserted.  One example are queries that don't
+        produce line numbers in their output; for those, -1 is used as value.
+
+     Unfortunately, this version of codeql
+     #+BEGIN_SRC sh 
+       cd ~/local/codeql-cli-end-to-end
+       ./codeql/codeql --version
+     #+END_SRC
+
+     #+RESULTS:
+     : CodeQL command-line toolchain release 2.13.4.
+     : Copyright (C) 2019-2023 GitHub, Inc.
+     : Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+     :    Analysis results depend critically on separately distributed query and
+     :    extractor modules. To list modules that are visible to the toolchain,
+     :    use 'codeql resolve qlpacks' and 'codeql resolve languages'.
+
+     has signature changes incompatible with (the older) sarif-cli (version
+     e62c351) 
+
+     #     #+BEGIN_SRC sh :exports both :results output
+     #       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate 
+     #       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+     #       # sarif-extract-tables d548189.sarif tabular
+     #       sarif-extract-scans-runner - <<EOF
+     #       d548189.sarif
+     #       EOF
+     #       echo d548189.sarif | sarif-extract-scans-runner - - EOF
+     #     #+END_SRC
+
 ** Running sequence
 *** Smallest query suite (security suite).
 *** Check results.
