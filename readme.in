@@ -1,0 +1,658 @@
+# -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
+#+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
+#+OPTIONS: org-confirm-babel-evaluate:nil
+
+# readme.in is the (partial) literate program used to generate readme.org
+
+* End-to-end demo of CodeQL command line usage
+
+** Run analyses
+*** Get collection of databases (already handy)
+**** DONE Get https://github.com/hohn/codeql-workshop-vulnerable-linux-driver
+     #+begin_src text
+       cd ~/local
+       git clone git@github.com:hohn/codeql-workshop-vulnerable-linux-driver.git
+       cd codeql-workshop-vulnerable-linux-driver/
+       unzip vulnerable-linux-driver.zip
+       tree -L 2 vulnerable-linux-driver-db/
+       vulnerable-linux-driver-db/
+       ├── codeql-database.yml
+       ├── db-cpp
+       │   ├── default
+       │   ├── semmlecode.cpp.dbscheme
+       │   └── semmlecode.cpp.dbscheme.stats
+       └── src.zip
+
+       3 directories, 4 files
+     #+end_src
+**** DONE Quick check using VS Code.  Same steps will repeat:
+***** select DB
+***** select query
+***** run query
+***** view results
+**** DONE Install codeql
+***** Full docs:
+      https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli
+      https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
+***** In short:
+      #+begin_src sh
+        cd ~/local/codeql-cli-end-to-endw
+        # Decide on version / os via browser, then: 
+        wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-osx64.tar.gz
+
+        # Fix attributes on mac
+        if [ `uname` = Darwin ] ; then
+            xattr -c *.tar.gz
+        fi
+
+        # Extract
+        tar zxf ./codeql-bundle-osx64.tar.gz
+
+        # Check binary
+        pwd
+        # /Users/hohn/local/codeql-cli-end-to-end
+        ./codeql/codeql --version
+        # CodeQL command-line toolchain release 2.13.4.
+        # Copyright (C) 2019-2023 GitHub, Inc.
+        # Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+        #    Analysis results depend critically on separately distributed query and
+        #    extractor modules. To list modules that are visible to the toolchain,
+        #    use 'codeql resolve qlpacks' and 'codeql resolve languages'.
+
+        # Check packs
+        0:$ ./codeql/codeql resolve qlpacks |head -5
+        # codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)
+        # codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)
+        # codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)
+        # codeql/csharp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-all/0.6.3)
+        # codeql/csharp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-examples/0.0.0) 
+
+        # Fix the path
+        export PATH=$(pwd -P)/codeql:"$PATH"
+
+        # Check languages
+        codeql resolve languages | head -5
+        # go (/Users/hohn/local/codeql-cli-end-to-end/codeql/go)
+        # python (/Users/hohn/local/codeql-cli-end-to-end/codeql/python)
+        # java (/Users/hohn/local/codeql-cli-end-to-end/codeql/java)
+        # html (/Users/hohn/local/codeql-cli-end-to-end/codeql/html)
+        # xml (/Users/hohn/local/codeql-cli-end-to-end/codeql/xml)
+      #+end_src
+***** A more fancy version
+      #+begin_src sh
+        # Reference urls:
+        # https://github.com/github/codeql-cli-binaries/releases/download/v2.8.0/codeql-linux64.zip
+        # https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.8.0.zip
+        #
+        # grab -- retrieve and extract codeql cli and library
+        # Usage: grab version url prefix
+        grab() {
+            version=$1; shift
+            platform=$1; shift
+            prefix=$1; shift
+            mkdir -p $prefix/codeql-$version &&
+                cd $prefix/codeql-$version || return
+
+            # Get cli
+            wget "https://github.com/github/codeql-cli-binaries/releases/download/$version/codeql-$platform.zip"
+            # Get lib
+            wget "https://github.com/github/codeql/archive/refs/tags/codeql-cli/$version.zip"
+            # Fix attributes
+            if [ `uname` = Darwin ] ; then
+                xattr -c *.zip
+            fi
+            # Extract
+            unzip -q codeql-$platform.zip
+            unzip -q $version.zip
+            # Rename library directory for VS Code
+            mv codeql-codeql-cli-$version/ ql
+            # remove archives?
+            # rm codeql-$platform.zip
+            # rm $version.zip
+        }
+
+        grab v2.7.6 osx64 $HOME/local
+        grab v2.8.3 osx64 $HOME/local
+        grab v2.8.4 osx64 $HOME/local
+
+        grab v2.6.3 linux64 /opt
+
+        grab v2.6.3 osx64 $HOME/local
+        grab v2.4.6 osx64 $HOME/local
+      #+end_src
+***** Most flexible in use, but more initial setup
+      =gh=, the GitHub command-line tool from https://github.com/cli/cli
+
+****** gh api repos/{owner}/{repo}/releases
+       https://cli.github.com/manual/gh_api
+****** gh extension create
+       https://cli.github.com/manual/gh_extension
+****** gh codeql extension
+       https://github.com/github/gh-codeql
+****** gh gist list
+       https://cli.github.com/manual/gh_gist_list
+
+       #+begin_src text
+         0:$ gh codeql
+         GitHub command-line wrapper for the CodeQL CLI.
+       #+end_src
+**** Install pack dependencies
+***** Full docs
+      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
+      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install
+***** View installed docs via =-h= flag, highly recommended
+      #+begin_src sh
+        # Overview
+        codeql -h
+
+        # Sub 1
+        codeql pack -h
+
+        # Sub 2
+        codeql pack install -h
+      #+end_src
+***** In short
+****** Create the qlpack
+       Create the qlpack files if not there, one per directory.  In this project,
+       that's already done:
+       #+begin_src sh
+         0:$ find codeql-workshop-vulnerable-linux-driver  -name "qlpack.yml" 
+         codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+         codeql-workshop-vulnerable-linux-driver/solutions/qlpack.yml
+         codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
+       #+end_src
+       For example:
+       : cat codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+       shows
+       #+BEGIN_SRC yaml
+         ---
+         library: false
+         name: queries
+         version: 0.0.1
+         dependencies:
+           codeql/cpp-all: ^0.7.0
+           common: "*"
+       #+END_SRC
+       So the queries directory does not contain a library, but it depends on one,
+       : cat codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
+       #+BEGIN_SRC yaml
+         ---
+         library: true
+         name: common
+         version: 0.0.1
+         dependencies:
+           codeql/cpp-all: 0.7.0
+       #+END_SRC
+       
+****** Install each pack's dependencies
+       The first time you install dependencies, it's a good idea to do this
+       menually, per =qlpack.yml= file, and deal with any errors that may occur.
+
+       #+BEGIN_SRC sh
+         pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+         codeql pack install --no-strict-mode queries/
+       #+END_SRC
+
+       After the initial setup and for automation, install each pack's
+       dependencies via a loop: =codeql pack install=
+       #+begin_src sh
+         pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+         find . -name "qlpack.yml"
+         # ./queries/qlpack.yml
+         # ./solutions/qlpack.yml
+         # ./common/qlpack.yml
+
+         codeql pack install --no-strict-mode queries/
+         # Dependencies resolved. Installing packages...
+         # Install location: /Users/hohn/.codeql/packages
+         # Nothing to install.
+         # Package install location: /Users/hohn/.codeql/packages
+         # Nothing downloaded.
+
+         for sub in `find . -name "qlpack.yml" | sed s@qlpack.yml@@g;`
+         do
+             codeql pack install --no-strict-mode $sub
+         done
+       #+end_src
+*** Run queries
+**** Individual: 1 database -> N sarif files
+     #+BEGIN_SRC sh
+       #* Set environment
+       PROJ=$HOME/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       DB=$PROJ/vulnerable-linux-driver-db
+       QLQUERY=$PROJ/solutions/BufferOverflow.ql
+       QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD)-BufferOverflow.sarif
+
+       #* Run query
+       pushd $PROJ
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $QUERY_RES_SARIF                        \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $DB                                              \
+              $QLQUERY
+
+       # if you get
+           # fatal error occurred: Error initializing the IMB disk cache: the cache
+           # directory is already locked by another running process. Only one instance of
+           # the IMB can access a cache directory at a time. The lock file is located at
+           # /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable-linux-driver-db/db-cpp/default/cache/.lock
+       #  exit vs code and try again
+     #+END_SRC
+
+     And after some time:
+
+     #+BEGIN_SRC text
+       BufferOverflow.ql: [1/1 eval 1.8s] Results written to solutions/BufferOverfl
+       Shutting down query evaluator.
+       Interpreting results.
+     #+END_SRC
+
+     #+BEGIN_SRC sh
+       echo The query $QLQUERY
+       echo run on $DB
+       echo produced output in $QUERY_RES_SARIF:
+       head -5 $QUERY_RES_SARIF
+       # {
+       #   "$schema" : "https://json.schemastore.org/sarif-2.1.0.json",
+       #   "version" : "2.1.0",
+       #   "runs" : [ {
+       #     "tool" : {
+       # ...
+     #+END_SRC
+
+     And run another, get another sarif file.  Bad idea in general, but good for
+     debugging timing etc.
+
+     #+BEGIN_SRC sh
+       #* Use prior variable settings
+
+       #* Run query
+       pushd $PROJ
+       qo=$PROJ/$(cd $PROJ && git rev-parse --short HEAD)-UseAfterFree.sarif
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $qo                                     \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $DB                                              \
+              $PROJ/solutions/UseAfterFree.ql
+       popd
+
+       echo "Query results in $qo"
+       head -5 "$qo"
+
+       # Query results in /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+       # {
+       #   "$schema" : "https://json.schemastore.org/sarif-2.1.0.json",
+       #   "version" : "2.1.0",
+       #   "runs" : [ {
+       #     "tool" : {
+     #+END_SRC
+
+**** Use directory of queries: 1 database -> 1 sarif file (least effort)
+     #+BEGIN_SRC sh
+       #* Set environment
+       P1_PROJ=$HOME/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       P1_DB=$PROJ/vulnerable-linux-driver-db
+       P1_QLQUERYDIR=$PROJ/solutions/
+       P1_QUERY_RES_SARIF=$PROJ/$(cd $PROJ && git rev-parse --short HEAD).sarif
+
+       #* check variables
+       set | grep P1_
+
+       #* Run query
+       pushd $P1_PROJ
+       codeql database analyze --format=sarif-latest --rerun   \
+              --output $P1_QUERY_RES_SARIF                     \
+              -j6                                              \
+              --ram=24000                                      \
+              --                                               \
+              $P1_DB                                           \
+              $P1_PROJ/solutions/
+       popd
+     #+END_SRC
+
+     We can compare SARIF result sizes:
+     #+BEGIN_SRC sh
+       ls -la "$qo" $P1_QUERY_RES_SARIF $QUERY_RES_SARIF
+     #+END_SRC
+
+     And for these tiny results, it's mostly metadata:
+     #+BEGIN_SRC text
+       -rw-r--r-- 1 hohn staff 29K Jun 20 10:06 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189-BufferOverflow.sarif
+       -rw-r--r-- 1 hohn staff 33K Jun 20 10:02 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189.sarif
+       -rw-r--r-- 1 hohn staff 28K Jun 20 09:51 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+     #+END_SRC
+     
+**** Use suite: 1 database -> 1 sarif file (more flexible, more effort)
+     A useful, general purpose template is at
+     https://github.com/rvermeulen/codeql-example-project-layout.
+
+***** Documentation
+       - [[https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/built-in-codeql-query-suites][built-in-codeql-query-suites]]
+       - [[https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/creating-codeql-query-suites][creating-codeql-query-suites]]
+         Important:
+
+         You must add at least one query, queries, or qlpack instruction to your
+         suite definition, otherwise no queries will be selected. If the suite
+         contains no further instructions, all the queries found from the list of
+         files, in the given directory, or in the named CodeQL pack are
+         selected. If there are further filtering instructions, only queries that
+         match the constraints imposed by those instructions will be selected. 
+
+         Also, a suite definition must be /in/ a codeql pack.
+***** In short
+     #+BEGIN_SRC sh
+       codeql resolve qlpacks | grep cpp
+
+       # Copy query suite into the pack
+       cd ~/local/codeql-cli-end-to-end
+       cp custom-suite-1.qls codeql-workshop-vulnerable-linux-driver/solutions/
+       codeql resolve queries \
+              codeql-workshop-vulnerable-linux-driver/solutions/custom-suite-1.qls
+     #+END_SRC
+
+     #+RESULTS:
+     : /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/solutions/UseAfterFree.ql
+
+     #+INCLUDE: "./custom-suite-1.qls" src yaml
+
+**** TODO Include versioning:
+***** TODO codeql cli
+***** TODO query set version
+      Checks:
+**** For building DBs: Common case: 15 minutes for || cpp compilation, can
+     be 2 h with codeql.
+** Review results
+*** SARIF Documentation
+    The standard is defined at
+    https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html 
+*** SARIF viewer plugin
+**** Install plugin in VS Code
+     https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer
+
+     Sarif Viewer
+     v3.3.7
+     Microsoft DevLabs
+     microsoft.com
+     53,335
+     (1)
+
+**** Review
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end
+       find . -maxdepth 2 -name "*.sarif" 
+     #+END_SRC
+     Pick one in VS Code.  Either
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       cd codeql-workshop-vulnerable-linux-driver/
+       code d548189.sarif
+     #+END_SRC
+     or manually.
+
+     We need the source.
+
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       git submodule init
+       git submodule update
+     #+END_SRC
+
+     When we review, VS Code will ask for the path.
+
+     #+BEGIN_SRC sh
+       cd /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable_linux_driver
+       ls src/vuln_driver.c
+     #+END_SRC
+
+     #+RESULTS:
+     : src/vuln_driver.c
+
+     Reviewing looks as follows.
+     #+ATTR_HTML: :alt sarif viewer :width 90%
+     [[./img/sarif-view-1.png]]
+
+*** View raw sarif with =jq=
+    List the SARIF files again 
+    #+BEGIN_SRC sh
+      cd ~/local/codeql-cli-end-to-end
+      find . -maxdepth 2 -name "*.sarif" 
+    #+END_SRC
+
+    #+RESULTS:
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif                |
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif   |
+    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-BufferOverflow.sarif |
+
+    The CodeQL version
+    #+BEGIN_SRC sh :exports both
+      cd ~/local/codeql-cli-end-to-end
+      jq '.runs | .[0] | .tool.driver.semanticVersion ' < ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
+    #+END_SRC
+
+    #+RESULTS:
+    : 2.13.4
+
+    The names of rules processed
+    #+BEGIN_SRC sh :exports both
+      cd ~/local/codeql-cli-end-to-end
+      jq '.runs | .[] | .tool.driver.rules | .[] | .name ' < ./codeql-workshop-vulnerable-linux-driver/d548189.sarif
+    #+END_SRC
+
+    #+RESULTS:
+    | cpp/buffer_overflow |
+    | cpp/use_after_free  |
+
+*** View raw sarif with =jq= and fzf
+    Install the fuzzy finder
+    : brew install fzf
+    or =apt-get=/=yum= on linux
+
+    Try working to =.runs[0].tool.driver.rules= and follow the output in real
+    time.
+
+    #+BEGIN_SRC sh
+      pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+      res=e402cf5-UseAfterFree.sarif
+      echo '' | fzf --print-query --preview="jq {q} < $res"
+      popd
+    #+END_SRC
+
+*** sarif-cli
+**** Setup / local install
+     Clone https://github.com/hohn/sarif-cli or
+     https://github.com/knewbury01/sarif-cli 
+
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end
+       git clone git@github.com:hohn/sarif-cli.git
+
+       cd ~/local/codeql-cli-end-to-end/sarif-cli
+       python3.9 -m venv .venv
+       . .venv/bin/activate
+
+       python -m pip install -r requirementsDEV.txt
+
+       # Put bin/ contents into venv PATH
+       pip install -e .
+     #+END_SRC
+
+**** Compiler-style textual output from SARIF
+     The sarif-cli has several script to use from the shell level:
+     #+BEGIN_SRC sh :exports both :results output
+       cd ~/local/codeql-cli-end-to-end/sarif-cli
+       ls -1 bin/
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     json-to-yaml
+     sarif-aggregate-scans
+     sarif-create-aggregate-report
+     sarif-digest
+     sarif-extract-multi
+     sarif-extract-scans
+     sarif-extract-scans-runner
+     sarif-extract-tables
+     sarif-labeled
+     sarif-list-files
+     sarif-pad-aggregate
+     sarif-results-summary
+     sarif-to-dot
+     #+end_example
+
+     
+     The simplest one just list the source files found during analysis:
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-list-files d548189.sarif 
+     #+END_SRC
+
+     #+RESULTS:
+     : src/buffer_overflow.h
+     : src/use_after_free.h
+     : src/vuln_driver.c
+
+     Much more useful is a compiler-style summary of all results found: 
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary  d548189.sarif
+     #+END_SRC
+
+     This sarif file has only two results, so the output is short:
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+     #+end_example
+
+     This illustrates the differences in the output between the two result =@kind=
+     s:
+     - =@kind problem= is a single list of results found
+     - =@kind path-problem= is a list of flow paths.  Each path in turn is a list
+       of locations.
+
+     Most of these scripts take options that significantly change their output; to
+     see them, use the =-h= or =--help= flags.  E.g.,
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       sarif-results-summary -h
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     usage: sarif-results-summary [-h] [-s srcroot] [-r] [-e] [-c] sarif-file
+
+     summary of results
+
+     positional arguments:
+       sarif-file            input file, - for stdin
+
+     optional arguments:
+       -h, --help            show this help message and exit
+       -s srcroot, --list-source srcroot
+                             list source snippets using srcroot as sarif SRCROOT
+       -r, --related-locations
+                             list related locations like "hides [parameter](1)"
+       -e, --endpoints-only  only list source and sink, dropping the path.
+                             Identical, successive source/sink pairs are combined
+       -c, --csv             output csv instead of human-readable summary
+     #+end_example
+
+     Some of these make output much more informative, like =-r= and =-s=:
+
+     With =-r=:
+     
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary -r d548189.sarif
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+     REFERENCE: src/buffer_overflow.h:20:17:20:23: memcpy
+     REFERENCE: src/buffer_overflow.h:8:22:8:33: stack buffer
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+     REFERENCE: src/use_after_free.h:84:22:84:24: fn
+     REFERENCE: src/use_after_free.h:87:70:87:72: fn
+     REFERENCE: src/use_after_free.h:87:90:87:93: arg
+     REFERENCE: src/use_after_free.h:89:20:89:22: fn
+     REFERENCE: src/use_after_free.h:89:39:89:42: arg
+     #+end_example
+     
+     If the source code is available, we can use =-s= to include snippets in the
+     output.  This effectively converts sarif to the format used by gcc and clang
+     to report warnings and errors.
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary  -s vulnerable_linux_driver/ d548189.sarif
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+                     memcpy(kernel_buff, buff, size);
+                                               ^^^^
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     static long do_ioctl(struct file *filp, unsigned int cmd, unsigned long args)
+                                                                             ^^^^
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+        buffer_overflow((char *) args);
+                        ^^^^^^^^^^^^^
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+      static int buffer_overflow(char __user *buff)
+                                              ^^^^
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+                     memcpy(kernel_buff, buff, size);
+                                               ^^^^
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+      uaf_obj *global_uaf_obj = NULL;
+               ^^^^^^^^^^^^^^
+     #+end_example
+
+**** TODO SQL conversion
+** Running sequence
+*** Smallest query suite (security suite).
+*** Check results.
+**** Lots of result (> 5000) -> cli review via compiler-style dump.
+**** Medium result sets (~ 2000) (sarif review plugin, can only load 5000
+     results) 
+**** Few results (sarif review plugin, can only load 5000 results)
+*** Expand query 
+** Compare results.
+*** sarif-cli using compiler-style dump
