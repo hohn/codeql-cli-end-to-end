@@ -357,7 +357,7 @@
      #+RESULTS:
      : /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/solutions/UseAfterFree.ql
 
-     #+INCLUDE: "./custom-suite-1.qls" src yaml
+     #+INCLUDE: "../custom-suite-1.qls" src yaml
 
 **** TODO Include versioning:
 ***** TODO codeql cli
@@ -417,34 +417,36 @@
 
 *** View raw sarif with =jq=
     List the SARIF files again 
-    #+BEGIN_SRC sh
+    #+BEGIN_SRC sh :exports both :results output
       cd ~/local/codeql-cli-end-to-end
       find . -maxdepth 2 -name "*.sarif" 
     #+END_SRC
 
     #+RESULTS:
-    | ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif                |
-    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif   |
-    | ./codeql-workshop-vulnerable-linux-driver/e402cf5-BufferOverflow.sarif |
+    : ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
+    : ./codeql-workshop-vulnerable-linux-driver/d548189.sarif
+    : ./codeql-workshop-vulnerable-linux-driver/d548189-BufferOverflow.sarif
+    : ./codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+    : ./codeql-workshop-vulnerable-linux-driver/e402cf5-BufferOverflow.sarif
 
     The CodeQL version
-    #+BEGIN_SRC sh :exports both
+    #+BEGIN_SRC sh :exports both :results output
       cd ~/local/codeql-cli-end-to-end
       jq '.runs | .[0] | .tool.driver.semanticVersion ' < ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
     #+END_SRC
 
     #+RESULTS:
-    : 2.13.4
+    : "2.13.4"
 
     The names of rules processed
-    #+BEGIN_SRC sh :exports both
+    #+BEGIN_SRC sh :exports both :results output
       cd ~/local/codeql-cli-end-to-end
       jq '.runs | .[] | .tool.driver.rules | .[] | .name ' < ./codeql-workshop-vulnerable-linux-driver/d548189.sarif
     #+END_SRC
 
     #+RESULTS:
-    | cpp/buffer_overflow |
-    | cpp/use_after_free  |
+    : "cpp/buffer_overflow"
+    : "cpp/use_after_free"
 
 *** View raw sarif with =jq= and fzf
     Install the fuzzy finder
