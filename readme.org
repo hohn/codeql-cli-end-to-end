@@ -1,5 +1,6 @@
-# -*- coding: utf-8 -*-
+# -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
 #+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
+#+OPTIONS: org-confirm-babel-evaluate:nil
 
 * End-to-end demo of CodeQL command line usage
 
@@ -443,7 +444,7 @@
     | cpp/buffer_overflow |
     | cpp/use_after_free  |
 
-*** View raw sarif with =jq= and fzf    
+*** View raw sarif with =jq= and fzf
     Install the fuzzy finder
     : brew install fzf
     or =apt-get=/=yum= on linux
@@ -458,9 +459,190 @@
       popd
     #+END_SRC
 
-*** TODO sarif-cli
-**** TODO Install
-**** TODO Dump
+*** sarif-cli
+**** Setup / local install
+     Clone https://github.com/hohn/sarif-cli or
+     https://github.com/knewbury01/sarif-cli 
+
+     #+BEGIN_SRC sh
+       cd ~/local/codeql-cli-end-to-end
+       git clone git@github.com:hohn/sarif-cli.git
+
+       cd ~/local/codeql-cli-end-to-end/sarif-cli
+       python3.9 -m venv .venv
+       . .venv/bin/activate
+
+       python -m pip install -r requirementsDEV.txt
+
+       # Put bin/ contents into venv PATH
+       pip install -e .
+     #+END_SRC
+
+**** Compiler-style textual output from SARIF
+     The sarif-cli has several script to use from the shell level:
+     #+BEGIN_SRC sh :exports both :results output
+       cd ~/local/codeql-cli-end-to-end/sarif-cli
+       ls -1 bin/
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     json-to-yaml
+     sarif-aggregate-scans
+     sarif-create-aggregate-report
+     sarif-digest
+     sarif-extract-multi
+     sarif-extract-scans
+     sarif-extract-scans-runner
+     sarif-extract-tables
+     sarif-labeled
+     sarif-list-files
+     sarif-pad-aggregate
+     sarif-results-summary
+     sarif-to-dot
+     #+end_example
+
+     
+     The simplest one just list the source files found during analysis:
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-list-files d548189.sarif 
+     #+END_SRC
+
+     #+RESULTS:
+     : src/buffer_overflow.h
+     : src/use_after_free.h
+     : src/vuln_driver.c
+
+     Much more useful is a compiler-style summary of all results found: 
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary  d548189.sarif
+     #+END_SRC
+
+     This sarif file has only two results, so the output is short:
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+     #+end_example
+
+     This illustrates the differences in the output between the two result =@kind=
+     s:
+     - =@kind problem= is a single list of results found
+     - =@kind path-problem= is a list of flow paths.  Each path in turn is a list
+       of locations.
+
+     Most of these scripts take options that significantly change their output; to
+     see them, use the =-h= or =--help= flags.  E.g.,
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       sarif-results-summary -h
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     usage: sarif-results-summary [-h] [-s srcroot] [-r] [-e] [-c] sarif-file
+
+     summary of results
+
+     positional arguments:
+       sarif-file            input file, - for stdin
+
+     optional arguments:
+       -h, --help            show this help message and exit
+       -s srcroot, --list-source srcroot
+                             list source snippets using srcroot as sarif SRCROOT
+       -r, --related-locations
+                             list related locations like "hides [parameter](1)"
+       -e, --endpoints-only  only list source and sink, dropping the path.
+                             Identical, successive source/sink pairs are combined
+       -c, --csv             output csv instead of human-readable summary
+     #+end_example
+
+     Some of these make output much more informative, like =-r= and =-s=:
+
+     With =-r=:
+     
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary -r d548189.sarif
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+     REFERENCE: src/buffer_overflow.h:20:17:20:23: memcpy
+     REFERENCE: src/buffer_overflow.h:8:22:8:33: stack buffer
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+     REFERENCE: src/use_after_free.h:84:22:84:24: fn
+     REFERENCE: src/use_after_free.h:87:70:87:72: fn
+     REFERENCE: src/use_after_free.h:87:90:87:93: arg
+     REFERENCE: src/use_after_free.h:89:20:89:22: fn
+     REFERENCE: src/use_after_free.h:89:39:89:42: arg
+     #+end_example
+     
+     If the source code is available, we can use =-s= to include snippets in the
+     output.  This effectively converts sarif to the format used by gcc and clang
+     to report warnings and errors.
+     #+BEGIN_SRC sh :exports both :results output
+       . ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       sarif-results-summary  -s vulnerable_linux_driver/ d548189.sarif
+     #+END_SRC
+
+     #+RESULTS:
+     #+begin_example
+     RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+                     memcpy(kernel_buff, buff, size);
+                                               ^^^^
+     PATH 0
+     FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+     static long do_ioctl(struct file *filp, unsigned int cmd, unsigned long args)
+                                                                             ^^^^
+     FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+        buffer_overflow((char *) args);
+                        ^^^^^^^^^^^^^
+     FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+      static int buffer_overflow(char __user *buff)
+                                              ^^^^
+     FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+                     memcpy(kernel_buff, buff, size);
+                                               ^^^^
+
+     RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+     The dangling pointer is used here: [fn](2)
+     The dangling pointer is used here: [arg](3)
+     The dangling pointer is used here: [fn](4)
+     The dangling pointer is used here: [arg](5)
+      uaf_obj *global_uaf_obj = NULL;
+               ^^^^^^^^^^^^^^
+     #+end_example
+
 **** TODO SQL conversion
 ** Running sequence
 *** Smallest query suite (security suite).
