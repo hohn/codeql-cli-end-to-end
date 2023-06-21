@@ -443,17 +443,25 @@
     | cpp/buffer_overflow |
     | cpp/use_after_free  |
 
-*** TODO View raw sarif with =jq= and fzf    
+*** View raw sarif with =jq= and fzf    
     Install the fuzzy finder
     : brew install fzf
     or =apt-get=/=yum= on linux
 
-    XX: echo '' | fzf --print-query --preview='jq {q} < results.sarif'
+    Try working to =.runs[0].tool.driver.rules= and follow the output in real
+    time.
 
+    #+BEGIN_SRC sh
+      pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+      res=e402cf5-UseAfterFree.sarif
+      echo '' | fzf --print-query --preview="jq {q} < $res"
+      popd
+    #+END_SRC
 
 *** TODO sarif-cli
-**** TODO dump
-**** TODO sql conversion
+**** TODO Install
+**** TODO Dump
+**** TODO SQL conversion
 ** Running sequence
 *** Smallest query suite (security suite).
 *** Check results.
