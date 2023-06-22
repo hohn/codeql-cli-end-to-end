@@ -1,4 +1,4 @@
- -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
+# -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
 #+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
 #+OPTIONS: org-confirm-babel-evaluate:nil
 
@@ -876,12 +876,44 @@ git checkout 203343df
      #     #+END_SRC
 
 ** Running sequence
-*** Smallest query suite (security suite).
-*** Check results.
-**** Lots of result (> 5000) -> cli review via compiler-style dump.
-**** Medium result sets (~ 2000) (sarif review plugin, can only load 5000
-     results) 
-**** Few results (sarif review plugin, can only load 5000 results)
+*** Smallest query suite to largest
+    A short script to show us how many queries the standard suites have:
+
+    #+BEGIN_SRC sh :exports both :results output
+      export PATH=$HOME/local/codeql-cli-end-to-end/codeql:"$PATH"
+
+      queries=`codeql resolve queries 2>&1 | grep cpp | awk '{print($1)}'`
+      (
+          for suite in $queries
+          do
+              len=`codeql resolve queries $suite | wc -l`
+              echo "Suite $suite has $len queries"
+          done
+      ) 2>/dev/null
+    #+END_SRC
+
+    #+RESULTS:
+    : Suite cpp-code-scanning.qls has       47 queries
+    : Suite cpp-lgtm-full.qls has      169 queries
+    : Suite cpp-lgtm.qls has      100 queries
+    : Suite cpp-security-and-quality.qls has      167 queries
+    : Suite cpp-security-experimental.qls has      118 queries
+    : Suite cpp-security-extended.qls has       83 queries
+
+    If we want to gradually increase coverage using the standard suites, we would
+    thus use them in this order:
+    - cpp-code-scanning.qls, 47 queries
+    - cpp-security-extended.qls, 83 queries
+    - cpp-lgtm.qls, 100 queries
+    - cpp-security-experimental.qls, 118 queries
+    - cpp-security-and-quality.qls, 167 queries
+    - cpp-lgtm-full.qls, 169 queries    
+
+*** Check result counts
+    - Lots of result (> 5000) -> cli review via compiler-style dump.
+    - Medium result sets (~ 2000) (sarif review plugin, can only load 5000
+      results) 
+    - Few results (sarif review plugin, can only load 5000 results)
 *** Expand query 
 ** Compare results.
 *** sarif-cli using compiler-style dump
