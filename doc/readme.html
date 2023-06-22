@@ -1,0 +1,1682 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2023-06-21 Wed 21:05 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>&lrm;</title>
+<meta name="author" content="Michael Hohn" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { }
+</style>
+</head>
+<body>
+<div id="content" class="content">
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgb422405">1. End-to-end demo of CodeQL command line usage</a>
+<ul>
+<li><a href="#org05fb703">1.1. Run analyses</a>
+<ul>
+<li><a href="#org8506171">1.1.1. Get collection of databases (already handy)</a>
+<ul>
+<li><a href="#orgd61db71">1.1.1.1. Get https://github.com/hohn/codeql-workshop-vulnerable-linux-driver</a></li>
+<li><a href="#orgee6a573">1.1.1.2. Quick check using VS Code</a></li>
+<li><a href="#org78d2435">1.1.1.3. Install codeql</a></li>
+<li><a href="#orgb3703b0">1.1.1.4. Install pack dependencies</a></li>
+</ul>
+</li>
+<li><a href="#org44e297c">1.1.2. Run queries</a>
+<ul>
+<li><a href="#orgae9f1c5">1.1.2.1. Individual: 1 database -&gt; N sarif files</a></li>
+<li><a href="#org2b0157c">1.1.2.2. Use directory of queries: 1 database -&gt; 1 sarif file (least effort)</a></li>
+<li><a href="#orge1aeb02">1.1.2.3. Use suite: 1 database -&gt; 1 sarif file (more flexible, more effort)</a></li>
+</ul>
+</li>
+<li><a href="#org50eeea0">1.1.3. The importance of versioning</a>
+<ul>
+<li><a href="#orge336aee">1.1.3.1. CodeQL cli version</a></li>
+<li><a href="#org471503f">1.1.3.2. Database version</a></li>
+<li><a href="#orgcf99d86">1.1.3.3. Query set version</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org61750e0">1.2. Review results</a>
+<ul>
+<li><a href="#org158451d">1.2.1. SARIF Documentation</a></li>
+<li><a href="#org5d82255">1.2.2. SARIF viewer plugin</a>
+<ul>
+<li><a href="#org59e05b3">1.2.2.1. Install plugin in VS Code</a></li>
+<li><a href="#org21c4f63">1.2.2.2. Review</a></li>
+</ul>
+</li>
+<li><a href="#orgec9396f">1.2.3. View raw sarif with <code>jq</code></a></li>
+<li><a href="#org23cea01">1.2.4. View raw sarif with <code>jq</code> and fzf</a></li>
+<li><a href="#org1d90826">1.2.5. sarif-cli</a>
+<ul>
+<li><a href="#org21cdd2a">1.2.5.1. Setup / local install</a></li>
+<li><a href="#org3618539">1.2.5.2. Compiler-style textual output from SARIF</a></li>
+<li><a href="#org40c6aa6">1.2.5.3. SQL conversion &#x2013; not compatible with codeql v2.13.4</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#org068b6ca">1.3. Running sequence</a>
+<ul>
+<li><a href="#org3babbb7">1.3.1. Smallest query suite to largest</a></li>
+<li><a href="#orgb041822">1.3.2. Working with results based on counts</a></li>
+</ul>
+</li>
+<li><a href="#orgfa04b9a">1.4. Comparing analysis results across sarif files</a></li>
+<li><a href="#org0e1cf7b">1.5. Miscellany</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb422405" class="outline-2">
+<h2 id="orgb422405"><span class="section-number-2">1.</span> End-to-end demo of CodeQL command line usage</h2>
+<div class="outline-text-2" id="text-1">
+</div>
+<div id="outline-container-org05fb703" class="outline-3">
+<h3 id="org05fb703"><span class="section-number-3">1.1.</span> Run analyses</h3>
+<div class="outline-text-3" id="text-1-1">
+</div>
+<div id="outline-container-org8506171" class="outline-4">
+<h4 id="org8506171"><span class="section-number-4">1.1.1.</span> Get collection of databases (already handy)</h4>
+<div class="outline-text-4" id="text-1-1-1">
+</div>
+<div id="outline-container-orgd61db71" class="outline-5">
+<h5 id="orgd61db71"><span class="section-number-5">1.1.1.1.</span> Get <a href="https://github.com/hohn/codeql-workshop-vulnerable-linux-driver">https://github.com/hohn/codeql-workshop-vulnerable-linux-driver</a></h5>
+<div class="outline-text-5" id="text-1-1-1-1">
+<div class="org-src-container">
+<pre class="src src-text">cd ~/local
+git clone git@github.com:hohn/codeql-workshop-vulnerable-linux-driver.git
+cd codeql-workshop-vulnerable-linux-driver/
+unzip vulnerable-linux-driver.zip
+tree -L 2 vulnerable-linux-driver-db/
+vulnerable-linux-driver-db/
+&#9500;&#9472;&#9472; codeql-database.yml
+&#9500;&#9472;&#9472; db-cpp
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; default
+&#9474;&#160;&#160; &#9500;&#9472;&#9472; semmlecode.cpp.dbscheme
+&#9474;&#160;&#160; &#9492;&#9472;&#9472; semmlecode.cpp.dbscheme.stats
+&#9492;&#9472;&#9472; src.zip
+
+3 directories, 4 files
+</pre>
+</div>
+</div>
+</div>
+<div id="outline-container-orgee6a573" class="outline-5">
+<h5 id="orgee6a573"><span class="section-number-5">1.1.1.2.</span> Quick check using VS Code</h5>
+<div class="outline-text-5" id="text-1-1-1-2">
+<p>
+The same steps will repeat for the cli.
+</p>
+<ul class="org-ul">
+<li>select DB</li>
+<li>select query</li>
+<li>run query</li>
+<li>view results</li>
+</ul>
+</div>
+</div>
+<div id="outline-container-org78d2435" class="outline-5">
+<h5 id="org78d2435"><span class="section-number-5">1.1.1.3.</span> Install codeql</h5>
+<div class="outline-text-5" id="text-1-1-1-3">
+</div>
+<ol class="org-ol">
+<li><a id="orgb13b180"></a>Full docs<br />
+<div class="outline-text-6" id="text-1-1-1-3-1">
+<ul class="org-ul">
+<li><a href="https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli">https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli</a></li>
+<li><a href="https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system">https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system</a></li>
+</ul>
+</div>
+</li>
+<li><a id="org739c9a4"></a>In short:<br />
+<div class="outline-text-6" id="text-1-1-1-3-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Decide on version / os via browser, then: </span>
+wget https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.13.4/codeql-bundle-osx64.tar.gz
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Fix attributes on mac</span>
+<span style="color: #a020f0;">if</span> [ <span style="color: #ff00ff;">`uname`</span> = Darwin ] ; <span style="color: #a020f0;">then</span>
+    xattr -c *.tar.gz
+<span style="color: #a020f0;">fi</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Extract</span>
+tar zxf ./codeql-bundle-osx64.tar.gz
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Check binary</span>
+<span style="color: #483d8b;">pwd</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">/Users/hohn/local/codeql-cli-end-to-end</span>
+./codeql/codeql --version
+<span style="color: #b22222;"># </span><span style="color: #b22222;">CodeQL command-line toolchain release 2.13.4.</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Copyright (C) 2019-2023 GitHub, Inc.</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql</span>
+<span style="color: #b22222;">#    </span><span style="color: #b22222;">Analysis results depend critically on separately distributed query and</span>
+<span style="color: #b22222;">#    </span><span style="color: #b22222;">extractor modules. To list modules that are visible to the toolchain,</span>
+<span style="color: #b22222;">#    </span><span style="color: #b22222;">use 'codeql resolve qlpacks' and 'codeql resolve languages'.</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Check packs</span>
+0:$ ./codeql/codeql resolve qlpacks |head -5
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql/csharp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-all/0.6.3)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql/csharp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/csharp-examples/0.0.0) </span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Fix the path</span>
+<span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$(<span style="color: #ff00ff;">pwd -P</span>)/codeql:<span style="color: #8b2252;">"$PATH"</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Check languages</span>
+codeql resolve languages | head -5
+<span style="color: #b22222;"># </span><span style="color: #b22222;">go (/Users/hohn/local/codeql-cli-end-to-end/codeql/go)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">python (/Users/hohn/local/codeql-cli-end-to-end/codeql/python)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">java (/Users/hohn/local/codeql-cli-end-to-end/codeql/java)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">html (/Users/hohn/local/codeql-cli-end-to-end/codeql/html)</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">xml (/Users/hohn/local/codeql-cli-end-to-end/codeql/xml)</span>
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org5f2531a"></a>A more fancy version<br />
+<div class="outline-text-6" id="text-1-1-1-3-3">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;"># </span><span style="color: #b22222;">Reference urls:</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">https://github.com/github/codeql-cli-binaries/releases/download/v2.8.0/codeql-linux64.zip</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">https://github.com/github/codeql/archive/refs/tags/codeql-cli/v2.8.0.zip</span>
+<span style="color: #b22222;">#</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">grab -- retrieve and extract codeql cli and library</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Usage: grab version url prefix</span>
+<span style="color: #0000ff;">grab</span>() {
+    <span style="color: #a0522d;">version</span>=$<span style="color: #a0522d;">1</span>; <span style="color: #483d8b;">shift</span>
+    <span style="color: #a0522d;">platform</span>=$<span style="color: #a0522d;">1</span>; <span style="color: #483d8b;">shift</span>
+    <span style="color: #a0522d;">prefix</span>=$<span style="color: #a0522d;">1</span>; <span style="color: #483d8b;">shift</span>
+    mkdir -p $<span style="color: #a0522d;">prefix</span>/codeql-$<span style="color: #a0522d;">version</span> &amp;&amp;
+        <span style="color: #483d8b;">cd</span> $<span style="color: #a0522d;">prefix</span>/codeql-$<span style="color: #a0522d;">version</span> || <span style="color: #a020f0;">return</span>
+
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">Get cli</span>
+    wget <span style="color: #8b2252;">"https://github.com/github/codeql-cli-binaries/releases/download/$version/codeql-$platform.zip"</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">Get lib</span>
+    wget <span style="color: #8b2252;">"https://github.com/github/codeql/archive/refs/tags/codeql-cli/$version.zip"</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">Fix attributes</span>
+    <span style="color: #a020f0;">if</span> [ <span style="color: #ff00ff;">`uname`</span> = Darwin ] ; <span style="color: #a020f0;">then</span>
+        xattr -c *.zip
+    <span style="color: #a020f0;">fi</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">Extract</span>
+    unzip -q codeql-$<span style="color: #a0522d;">platform</span>.zip
+    unzip -q $<span style="color: #a0522d;">version</span>.zip
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">Rename library directory for VS Code</span>
+    mv codeql-codeql-cli-$<span style="color: #a0522d;">version</span>/ ql
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">remove archives?</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">rm codeql-$platform.zip</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">rm $version.zip</span>
+}
+
+grab v2.7.6 osx64 $<span style="color: #a0522d;">HOME</span>/local
+grab v2.8.3 osx64 $<span style="color: #a0522d;">HOME</span>/local
+grab v2.8.4 osx64 $<span style="color: #a0522d;">HOME</span>/local
+
+grab v2.6.3 linux64 /opt
+
+grab v2.6.3 osx64 $<span style="color: #a0522d;">HOME</span>/local
+grab v2.4.6 osx64 $<span style="color: #a0522d;">HOME</span>/local
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org35d34b5"></a>Most flexible in use, but more initial setup<br />
+<div class="outline-text-6" id="text-1-1-1-3-4">
+<p>
+<code>gh</code>, the GitHub command-line tool from <a href="https://github.com/cli/cli">https://github.com/cli/cli</a>
+</p>
+
+<ul class="org-ul">
+<li>gh api repos/{owner}/{repo}/releases
+<a href="https://cli.github.com/manual/gh_api">https://cli.github.com/manual/gh_api</a></li>
+<li>gh extension create
+<a href="https://cli.github.com/manual/gh_extension">https://cli.github.com/manual/gh_extension</a></li>
+<li>gh codeql extension
+<a href="https://github.com/github/gh-codeql">https://github.com/github/gh-codeql</a></li>
+<li><p>
+gh gist list
+<a href="https://cli.github.com/manual/gh_gist_list">https://cli.github.com/manual/gh_gist_list</a>
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">0:$ gh codeql
+GitHub command-line wrapper for the CodeQL CLI.
+</pre>
+</div></li>
+</ul>
+</div>
+</li>
+</ol>
+</div>
+<div id="outline-container-orgb3703b0" class="outline-5">
+<h5 id="orgb3703b0"><span class="section-number-5">1.1.1.4.</span> Install pack dependencies</h5>
+<div class="outline-text-5" id="text-1-1-1-4">
+</div>
+<ol class="org-ol">
+<li><a id="org115b8cf"></a>Full docs<br />
+<div class="outline-text-6" id="text-1-1-1-4-1">
+<ul class="org-ul">
+<li><a href="https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files">https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files</a></li>
+<li><a href="https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install">https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install</a></li>
+</ul>
+</div>
+</li>
+<li><a id="org519117d"></a>View installed docs via <code>-h</code> flag, highly recommended<br />
+<div class="outline-text-6" id="text-1-1-1-4-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;"># </span><span style="color: #b22222;">Overview</span>
+codeql -h
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Sub 1</span>
+codeql pack -h
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Sub 2</span>
+codeql pack install -h
+</pre>
+</div>
+</div>
+</li>
+<li><a id="org1656faf"></a>In short<br />
+<ol class="org-ol">
+<li><a id="orgc1f5376"></a>Create the qlpack<br />
+<div class="outline-text-7" id="text-1-1-1-4-3-1">
+<p>
+Create the qlpack files if not there, one per directory.  In this project,
+that's already done:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">0:$ find codeql-workshop-vulnerable-linux-driver  -name <span style="color: #8b2252;">"qlpack.yml"</span> 
+codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+codeql-workshop-vulnerable-linux-driver/solutions/qlpack.yml
+codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
+</pre>
+</div>
+<p>
+For example:
+</p>
+<pre class="example">
+cat codeql-workshop-vulnerable-linux-driver/queries/qlpack.yml
+</pre>
+
+<p>
+shows
+</p>
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #b22222;">---</span>
+<span style="color: #a0522d;">library</span>: <span style="color: #008b8b;">false</span>
+<span style="color: #a0522d;">name</span>: queries
+<span style="color: #a0522d;">version</span>: 0.0.1
+<span style="color: #a0522d;">dependencies</span>:
+  <span style="color: #a0522d;">codeql/cpp-all</span>: ^0.7.0
+  <span style="color: #a0522d;">common</span>: <span style="color: #8b2252;">"*"</span>
+</pre>
+</div>
+<p>
+So the queries directory does not contain a library, but it depends on one,
+</p>
+<pre class="example">
+cat codeql-workshop-vulnerable-linux-driver/common/qlpack.yml
+</pre>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #b22222;">---</span>
+<span style="color: #a0522d;">library</span>: <span style="color: #008b8b;">true</span>
+<span style="color: #a0522d;">name</span>: common
+<span style="color: #a0522d;">version</span>: 0.0.1
+<span style="color: #a0522d;">dependencies</span>:
+  <span style="color: #a0522d;">codeql/cpp-all</span>: 0.7.0
+</pre>
+</div>
+</div>
+</li>
+
+<li><a id="orgf729206"></a>Install each pack's dependencies<br />
+<div class="outline-text-7" id="text-1-1-1-4-3-2">
+<p>
+The first time you install dependencies, it's a good idea to do this
+menually, per <code>qlpack.yml</code> file, and deal with any errors that may occur.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">pushd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+codeql pack install --no-strict-mode queries/
+</pre>
+</div>
+
+<p>
+After the initial setup and for automation, install each pack's
+dependencies via a loop using <code>codeql pack install</code>
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">pushd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+find . -name <span style="color: #8b2252;">"qlpack.yml"</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">./queries/qlpack.yml</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">./solutions/qlpack.yml</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">./common/qlpack.yml</span>
+
+codeql pack install --no-strict-mode queries/
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Dependencies resolved. Installing packages...</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Install location: /Users/hohn/.codeql/packages</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Nothing to install.</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Package install location: /Users/hohn/.codeql/packages</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Nothing downloaded.</span>
+
+<span style="color: #a020f0;">for</span> sub<span style="color: #a020f0;"> in</span> <span style="color: #ff00ff;">`find . -name "qlpack.yml" | sed s@qlpack.yml@@g;`</span>
+<span style="color: #a020f0;">do</span>
+    codeql pack install --no-strict-mode $<span style="color: #a0522d;">sub</span>
+<span style="color: #a020f0;">done</span>
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+</div>
+</div>
+<div id="outline-container-org44e297c" class="outline-4">
+<h4 id="org44e297c"><span class="section-number-4">1.1.2.</span> Run queries</h4>
+<div class="outline-text-4" id="text-1-1-2">
+</div>
+<div id="outline-container-orgae9f1c5" class="outline-5">
+<h5 id="orgae9f1c5"><span class="section-number-5">1.1.2.1.</span> Individual: 1 database -&gt; N sarif files</h5>
+<div class="outline-text-5" id="text-1-1-2-1">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;">#</span><span style="color: #b22222;">* Set environment</span>
+<span style="color: #a0522d;">PROJ</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+<span style="color: #a0522d;">DB</span>=$<span style="color: #a0522d;">PROJ</span>/vulnerable-linux-driver-db
+<span style="color: #a0522d;">QLQUERY</span>=$<span style="color: #a0522d;">PROJ</span>/solutions/BufferOverflow.ql
+<span style="color: #a0522d;">QUERY_RES_SARIF</span>=$<span style="color: #a0522d;">PROJ</span>/$(<span style="color: #ff00ff;">cd $PROJ &amp;&amp; git rev-parse --short HEAD</span>)-BufferOverflow.sarif
+
+<span style="color: #b22222;">#</span><span style="color: #b22222;">* Run query</span>
+<span style="color: #483d8b;">pushd</span> $<span style="color: #a0522d;">PROJ</span>
+codeql database analyze --format=sarif-latest --rerun   <span style="color: #8b2252;">\</span>
+       --output $<span style="color: #a0522d;">QUERY_RES_SARIF</span>                        <span style="color: #8b2252;">\</span>
+       -j6                                              <span style="color: #8b2252;">\</span>
+       --ram=24000                                      <span style="color: #8b2252;">\</span>
+       --                                               <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">DB</span>                                              <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">QLQUERY</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">if you get</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">fatal error occurred: Error initializing the IMB disk cache: the cache</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">directory is already locked by another running process. Only one instance of</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">the IMB can access a cache directory at a time. The lock file is located at</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">/Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable-linux-driver-db/db-cpp/default/cache/.lock</span>
+<span style="color: #b22222;">#  </span><span style="color: #b22222;">exit vs code and try again</span>
+</pre>
+</div>
+
+<p>
+And after some time:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-text">BufferOverflow.ql: [1/1 eval 1.8s] Results written to solutions/BufferOverfl
+Shutting down query evaluator.
+Interpreting results.
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">echo</span> The query $<span style="color: #a0522d;">QLQUERY</span>
+<span style="color: #483d8b;">echo</span> run on $<span style="color: #a0522d;">DB</span>
+<span style="color: #483d8b;">echo</span> produced output<span style="color: #a020f0;"> in</span> $<span style="color: #a0522d;">QUERY_RES_SARIF</span>:
+head -5 $<span style="color: #a0522d;">QUERY_RES_SARIF</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">{</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"$schema" : "https://json.schemastore.org/sarif-2.1.0.json",</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"version" : "2.1.0",</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"runs" : [ {</span>
+<span style="color: #b22222;">#     </span><span style="color: #b22222;">"tool" : {</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">...</span>
+</pre>
+</div>
+
+<p>
+And run another, get another sarif file.  Bad idea in general, but good for
+debugging timing etc.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;">#</span><span style="color: #b22222;">* Use prior variable settings</span>
+
+<span style="color: #b22222;">#</span><span style="color: #b22222;">* Run query</span>
+<span style="color: #483d8b;">pushd</span> $<span style="color: #a0522d;">PROJ</span>
+<span style="color: #a0522d;">qo</span>=$<span style="color: #a0522d;">PROJ</span>/$(<span style="color: #ff00ff;">cd $PROJ &amp;&amp; git rev-parse --short HEAD</span>)-UseAfterFree.sarif
+codeql database analyze --format=sarif-latest --rerun   <span style="color: #8b2252;">\</span>
+       --output $<span style="color: #a0522d;">qo</span>                                     <span style="color: #8b2252;">\</span>
+       -j6                                              <span style="color: #8b2252;">\</span>
+       --ram=24000                                      <span style="color: #8b2252;">\</span>
+       --                                               <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">DB</span>                                              <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">PROJ</span>/solutions/UseAfterFree.ql
+<span style="color: #483d8b;">popd</span>
+
+<span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">"Query results in $qo"</span>
+head -5 <span style="color: #8b2252;">"$qo"</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Query results in /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">{</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"$schema" : "https://json.schemastore.org/sarif-2.1.0.json",</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"version" : "2.1.0",</span>
+<span style="color: #b22222;">#   </span><span style="color: #b22222;">"runs" : [ {</span>
+<span style="color: #b22222;">#     </span><span style="color: #b22222;">"tool" : {</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org2b0157c" class="outline-5">
+<h5 id="org2b0157c"><span class="section-number-5">1.1.2.2.</span> Use directory of queries: 1 database -&gt; 1 sarif file (least effort)</h5>
+<div class="outline-text-5" id="text-1-1-2-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #b22222;">#</span><span style="color: #b22222;">* Set environment</span>
+<span style="color: #a0522d;">P1_PROJ</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+<span style="color: #a0522d;">P1_DB</span>=$<span style="color: #a0522d;">PROJ</span>/vulnerable-linux-driver-db
+<span style="color: #a0522d;">P1_QLQUERYDIR</span>=$<span style="color: #a0522d;">PROJ</span>/solutions/
+<span style="color: #a0522d;">P1_QUERY_RES_SARIF</span>=$<span style="color: #a0522d;">PROJ</span>/$(<span style="color: #ff00ff;">cd $PROJ &amp;&amp; git rev-parse --short HEAD</span>).sarif
+
+<span style="color: #b22222;">#</span><span style="color: #b22222;">* check variables</span>
+<span style="color: #483d8b;">set</span> | grep P1_
+
+<span style="color: #b22222;">#</span><span style="color: #b22222;">* Run query</span>
+<span style="color: #483d8b;">pushd</span> $<span style="color: #a0522d;">P1_PROJ</span>
+codeql database analyze --format=sarif-latest --rerun   <span style="color: #8b2252;">\</span>
+       --output $<span style="color: #a0522d;">P1_QUERY_RES_SARIF</span>                     <span style="color: #8b2252;">\</span>
+       -j6                                              <span style="color: #8b2252;">\</span>
+       --ram=24000                                      <span style="color: #8b2252;">\</span>
+       --                                               <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">P1_DB</span>                                           <span style="color: #8b2252;">\</span>
+       $<span style="color: #a0522d;">P1_PROJ</span>/solutions/
+<span style="color: #483d8b;">popd</span>
+</pre>
+</div>
+
+<p>
+We can compare SARIF result sizes:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">ls -la <span style="color: #8b2252;">"$qo"</span> $<span style="color: #a0522d;">P1_QUERY_RES_SARIF</span> $<span style="color: #a0522d;">QUERY_RES_SARIF</span>
+</pre>
+</div>
+
+<p>
+And for these tiny results, it's mostly metadata:
+</p>
+<div class="org-src-container">
+<pre class="src src-text">-rw-r--r-- 1 hohn staff 29K Jun 20 10:06 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189-BufferOverflow.sarif
+-rw-r--r-- 1 hohn staff 33K Jun 20 10:02 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/d548189.sarif
+-rw-r--r-- 1 hohn staff 28K Jun 20 09:51 /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orge1aeb02" class="outline-5">
+<h5 id="orge1aeb02"><span class="section-number-5">1.1.2.3.</span> Use suite: 1 database -&gt; 1 sarif file (more flexible, more effort)</h5>
+<div class="outline-text-5" id="text-1-1-2-3">
+<p>
+A useful, general purpose template is at
+<a href="https://github.com/rvermeulen/codeql-example-project-layout">https://github.com/rvermeulen/codeql-example-project-layout</a>.
+</p>
+</div>
+
+<ol class="org-ol">
+<li><a id="orgf26fc44"></a>Documentation<br />
+<div class="outline-text-6" id="text-1-1-2-3-1">
+<ul class="org-ul">
+<li><a href="https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/built-in-codeql-query-suites">built-in-codeql-query-suites</a></li>
+<li><p>
+<a href="https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/creating-codeql-query-suites">creating-codeql-query-suites</a>
+Important:
+</p>
+
+<p>
+You must add at least one query, queries, or qlpack instruction to your
+suite definition, otherwise no queries will be selected. If the suite
+contains no further instructions, all the queries found from the list of
+files, in the given directory, or in the named CodeQL pack are
+selected. If there are further filtering instructions, only queries that
+match the constraints imposed by those instructions will be selected. 
+</p>
+
+<p>
+Also, a suite definition must be <i>in</i> a codeql pack.
+</p></li>
+</ul>
+</div>
+</li>
+<li><a id="orgcf9ad81"></a>In short<br />
+<div class="outline-text-6" id="text-1-1-2-3-2">
+<div class="org-src-container">
+<pre class="src src-sh">codeql resolve qlpacks | grep cpp
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Copy query suite into the pack</span>
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+cp custom-suite-1.qls codeql-workshop-vulnerable-linux-driver/solutions/
+codeql resolve queries <span style="color: #8b2252;">\</span>
+       codeql-workshop-vulnerable-linux-driver/solutions/custom-suite-1.qls
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-yaml"><span style="color: #b22222;"># </span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Taken from</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">codeql-v2.12.3/codeql/qlpacks/codeql/suite-helpers/0.4.3/code-scanning-selectors.yml</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">and modified</span>
+<span style="color: #b22222;"># </span>
+- <span style="color: #a0522d;">description</span>: Security sample queries
+- <span style="color: #a0522d;">queries</span>: .
+<span style="color: #b22222;"># </span><span style="color: #b22222;">- qlpack: some-pack-cpp</span>
+- <span style="color: #a0522d;">include</span>:
+    <span style="color: #a0522d;">kind</span>:
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">UseAfterFree</span>
+    - problem
+    <span style="color: #b22222;"># </span><span style="color: #b22222;"># BufferOverflow</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">- path-problem</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">precision:</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">- high</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">- very-high</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">problem.severity:</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">- error</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">tags contain:</span>
+    <span style="color: #b22222;"># </span><span style="color: #b22222;">- security</span>
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">- exclude:</span>
+<span style="color: #b22222;">#     </span><span style="color: #b22222;">deprecated: //</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">- exclude:</span>
+<span style="color: #b22222;">#     </span><span style="color: #b22222;">query path:</span>
+<span style="color: #b22222;">#       </span><span style="color: #b22222;">- /^experimental\/.*/</span>
+<span style="color: #b22222;">#       </span><span style="color: #b22222;">- Metrics/Summaries/FrameworkCoverage.ql</span>
+<span style="color: #b22222;">#       </span><span style="color: #b22222;">- /Diagnostics/Internal/.*/</span>
+<span style="color: #b22222;"># </span><span style="color: #b22222;">- exclude:</span>
+<span style="color: #b22222;">#     </span><span style="color: #b22222;">tags contain:</span>
+<span style="color: #b22222;">#       </span><span style="color: #b22222;">- modelgenerator    </span>
+</pre>
+</div>
+</div>
+</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org50eeea0" class="outline-4">
+<h4 id="org50eeea0"><span class="section-number-4">1.1.3.</span> The importance of versioning</h4>
+<div class="outline-text-4" id="text-1-1-3">
+</div>
+<div id="outline-container-orge336aee" class="outline-5">
+<h5 id="orge336aee"><span class="section-number-5">1.1.3.1.</span> CodeQL cli version</h5>
+<div class="outline-text-5" id="text-1-1-3-1">
+<p>
+Easy:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql:<span style="color: #8b2252;">"$PATH"</span>
+codeql --version
+</pre>
+</div>
+
+<pre class="example">
+CodeQL command-line toolchain release 2.13.4.
+Copyright (C) 2019-2023 GitHub, Inc.
+Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+   Analysis results depend critically on separately distributed query and
+   extractor modules. To list modules that are visible to the toolchain,
+   use 'codeql resolve qlpacks' and 'codeql resolve languages'.
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org471503f" class="outline-5">
+<h5 id="org471503f"><span class="section-number-5">1.1.3.2.</span> Database version</h5>
+<div class="outline-text-5" id="text-1-1-3-2">
+<p>
+An attempt to run an analysis with an older version of the cli against a
+database created with a newer cli version will likely abort with an error.
+</p>
+
+<p>
+In terms of commands, the codeql versions used for
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">codeql database create ...
+</pre>
+</div>
+<p>
+and
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">codeql database analyze ..
+</pre>
+</div>
+<p>
+should be the same.
+</p>
+
+<p>
+If you just have a collection of databases, you can check what version of
+the cli produced it.
+The database directory contains the codeql version used in a yaml file,
+a human-readable check:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+grep -A 2 creationMetadata  vulnerable-linux-driver-db/codeql-database.yml 
+</pre>
+</div>
+
+<pre class="example">
+creationMetadata:
+  cliVersion: 2.13.0
+  creationTime: 2023-04-24T21:39:15.963711665Z
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgcf99d86" class="outline-5">
+<h5 id="orgcf99d86"><span class="section-number-5">1.1.3.3.</span> Query set version</h5>
+<div class="outline-text-5" id="text-1-1-3-3">
+<ul class="org-ul">
+<li><p>
+For suites in our own source code
+</p>
+
+<p>
+Your query sets <i>may</i> have release versions or tags.  But they almost
+certainly have git commit ids that can be used, like the following:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+git rev-parse --short HEAD
+</pre>
+</div>
+
+<pre class="example">
+d548189
+</pre>
+
+
+<p>
+If you use packs, you can fix the ids of dependencies in the <code>qlpack.yml</code>
+file.  In our example, this is done in several places.  The <code>common</code>
+version:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+cat common/qlpack.yml 
+</pre>
+</div>
+
+<pre class="example">
+---
+library: true
+name: common
+version: 0.0.1
+dependencies:
+  codeql/cpp-all: 0.7.0
+</pre>
+
+
+<p>
+The dependencies are transitive; both <code>queries</code> and <code>solutions</code> depend on
+<code>common</code>, so packs fixed by common also fix packs used by the others.
+And <code>common</code> is fixed by our <code>git</code> id, so we're done.
+</p></li>
+
+<li><p>
+Some optional details
+</p>
+
+<p>
+We have specified these packs:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+grep codeql/cpp-all */qlpack.yml
+</pre>
+</div>
+
+<pre class="example">
+common/qlpack.yml:  codeql/cpp-all: 0.7.0
+queries/qlpack.yml:  codeql/cpp-all: ^0.7.0
+</pre>
+
+
+<p>
+The caret notation <code>^</code> means "at least".  So at least version 0.7.0. 
+</p>
+
+<p>
+After we install packs via
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">codeql pack install --no-strict-mode ...
+</pre>
+</div>
+<p>
+some lock files are generated, and those fix versions further down the
+dependency chain:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+cat common/codeql-pack.lock.yml
+</pre>
+</div>
+
+<pre class="example" id="org15e703b">
+---
+lockVersion: 1.0.0
+dependencies:
+  codeql/cpp-all:
+    version: 0.7.0
+  codeql/ssa:
+    version: 0.0.15
+  codeql/tutorial:
+    version: 0.0.8
+  codeql/util:
+    version: 0.0.8
+compiled: false
+</pre></li>
+
+<li><p>
+Note that a query suite is always in a codeql pack, so the pack id is also
+the suite id.
+</p>
+
+<p>
+For example, above we copied a suite and resolved it:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+cp custom-suite-1.qls codeql-workshop-vulnerable-linux-driver/solutions/
+codeql resolve queries <span style="color: #8b2252;">\</span>
+       codeql-workshop-vulnerable-linux-driver/solutions/custom-suite-1.qls
+</pre>
+</div>
+<pre class="example">
+/Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/solutions/UseAfterFree.ql
+</pre>
+
+
+<p>
+To assign a version number, we can use the revision id:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+git rev-parse --short head
+</pre>
+</div>
+
+<pre class="example">
+7bade5b
+</pre></li>
+
+<li><p>
+For manually selected library suites
+</p>
+
+<p>
+For a library suite, we can use the pack id.  For example, we can 
+list the packs
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql:<span style="color: #8b2252;">"$PATH"</span>
+codeql resolve qlpacks | grep cpp
+</pre>
+</div>
+
+<pre class="example">
+codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)
+codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)
+codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)
+</pre>
+
+
+<p>
+Following the last one, we can find some query suites manually.
+The pack is already known; 0.6.3.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh">find ~/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3 <span style="color: #8b2252;">\</span>
+     -name <span style="color: #8b2252;">"*.qls"</span>
+</pre>
+</div>
+
+<pre class="example">
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-extended.qls
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-and-quality.qls
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-experimental.qls
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-code-scanning.qls
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-lgtm-full.qls
+/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-lgtm.qls
+</pre></li>
+
+<li><p>
+For predefined suites from <code>codeql resolve queries</code>
+</p>
+
+<p>
+A full list of suites is produced via <code>codeql resolve queries</code>, here is a
+filtered version.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql:<span style="color: #8b2252;">"$PATH"</span>
+codeql resolve queries 2&gt;&amp;1  | grep cpp
+</pre>
+</div>
+
+<pre class="example">
+cpp-code-scanning.qls - Standard Code Scanning queries for C and C++
+cpp-lgtm-full.qls - Standard LGTM queries for C/C++, including ones not displayed by default
+cpp-lgtm.qls - Standard LGTM queries for C/C++
+cpp-security-and-quality.qls - Security-and-quality queries for C and C++
+cpp-security-experimental.qls - Extended and experimental security queries for C and C++
+cpp-security-extended.qls - Security-extended queries for C and C++
+</pre>
+
+
+<p>
+The following just counts the list but notice the header output has version
+info reported on <code>stderr</code>:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql:<span style="color: #8b2252;">"$PATH"</span>
+( codeql resolve queries cpp-code-scanning.qls | wc ) 2&gt;&amp;1
+</pre>
+</div>
+
+<pre class="example">
+Recording pack reference codeql/cpp-queries at /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3.
+Recording pack reference codeql/suite-helpers at /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/.codeql/libraries/codeql/suite-helpers/0.5.3.
+      47      65    5813
+</pre>
+
+
+<p>
+So we can use the codeql/cpp-queries version, 0.6.3, if we run the
+<code>cpp-code-scanning.qls</code> query suite.
+</p></li>
+</ul>
+
+<p>
+The difference in the last two approaches is the way the suite is chosen.  The
+version number will be the same.
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org61750e0" class="outline-3">
+<h3 id="org61750e0"><span class="section-number-3">1.2.</span> Review results</h3>
+<div class="outline-text-3" id="text-1-2">
+</div>
+<div id="outline-container-org158451d" class="outline-4">
+<h4 id="org158451d"><span class="section-number-4">1.2.1.</span> SARIF Documentation</h4>
+<div class="outline-text-4" id="text-1-2-1">
+<p>
+The standard is defined at
+<a href="https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html">https://docs.oasis-open.org/sarif/sarif/v2.1.0/os/sarif-v2.1.0-os.html</a> 
+</p>
+</div>
+</div>
+<div id="outline-container-org5d82255" class="outline-4">
+<h4 id="org5d82255"><span class="section-number-4">1.2.2.</span> SARIF viewer plugin</h4>
+<div class="outline-text-4" id="text-1-2-2">
+</div>
+<div id="outline-container-org59e05b3" class="outline-5">
+<h5 id="org59e05b3"><span class="section-number-5">1.2.2.1.</span> Install plugin in VS Code</h5>
+<div class="outline-text-5" id="text-1-2-2-1">
+<p>
+<a href="https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer">https://marketplace.visualstudio.com/items?itemName=MS-SarifVSCode.sarif-viewer</a>
+</p>
+
+<p>
+Sarif Viewer
+v3.3.7
+Microsoft DevLabs
+microsoft.com
+53,335
+(1)
+</p>
+</div>
+</div>
+
+<div id="outline-container-org21c4f63" class="outline-5">
+<h5 id="org21c4f63"><span class="section-number-5">1.2.2.2.</span> Review</h5>
+<div class="outline-text-5" id="text-1-2-2-2">
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+find . -maxdepth 2 -name <span style="color: #8b2252;">"*.sarif"</span> 
+</pre>
+</div>
+<p>
+Pick one in VS Code.  Either
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+<span style="color: #483d8b;">cd</span> codeql-workshop-vulnerable-linux-driver/
+code d548189.sarif
+</pre>
+</div>
+<p>
+or manually.
+</p>
+
+<p>
+We need the source.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+git submodule init
+git submodule update
+</pre>
+</div>
+
+<p>
+When we review, VS Code will ask for the path.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> /Users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/vulnerable_linux_driver
+ls src/vuln_driver.c
+</pre>
+</div>
+
+<p>
+Reviewing looks as follows.
+</p>
+
+<div id="orgc9d9979" class="figure">
+<p><img src="../img/sarif-view-1.png" alt="sarif viewer" width="90%" />
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgec9396f" class="outline-4">
+<h4 id="orgec9396f"><span class="section-number-4">1.2.3.</span> View raw sarif with <code>jq</code></h4>
+<div class="outline-text-4" id="text-1-2-3">
+<p>
+List the SARIF files again 
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+find . -maxdepth 2 -name <span style="color: #8b2252;">"*.sarif"</span> 
+</pre>
+</div>
+
+<pre class="example">
+./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
+./codeql-workshop-vulnerable-linux-driver/d548189.sarif
+./codeql-workshop-vulnerable-linux-driver/d548189-BufferOverflow.sarif
+./codeql-workshop-vulnerable-linux-driver/e402cf5-UseAfterFree.sarif
+./codeql-workshop-vulnerable-linux-driver/e402cf5-BufferOverflow.sarif
+</pre>
+
+
+<p>
+The CodeQL version
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+jq <span style="color: #8b2252;">'.runs | .[0] | .tool.driver.semanticVersion '</span> &lt; ./codeql-workshop-vulnerable-linux-driver/e402cf5.sarif
+</pre>
+</div>
+
+<pre class="example">
+"2.13.4"
+</pre>
+
+
+<p>
+The names of rules processed
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+jq <span style="color: #8b2252;">'.runs | .[] | .tool.driver.rules | .[] | .name '</span> &lt; ./codeql-workshop-vulnerable-linux-driver/d548189.sarif
+</pre>
+</div>
+
+<pre class="example">
+"cpp/buffer_overflow"
+"cpp/use_after_free"
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org23cea01" class="outline-4">
+<h4 id="org23cea01"><span class="section-number-4">1.2.4.</span> View raw sarif with <code>jq</code> and fzf</h4>
+<div class="outline-text-4" id="text-1-2-4">
+<p>
+Install the fuzzy finder
+</p>
+<pre class="example">
+brew install fzf
+</pre>
+
+<p>
+or <code>apt-get=/=yum</code> on linux
+</p>
+
+<p>
+Try working to <code>.runs[0].tool.driver.rules</code> and follow the output in real
+time.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">pushd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+<span style="color: #a0522d;">res</span>=e402cf5-UseAfterFree.sarif
+<span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">''</span> | fzf --print-query --preview=<span style="color: #8b2252;">"jq {q} &lt; $res"</span>
+<span style="color: #483d8b;">popd</span>
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org1d90826" class="outline-4">
+<h4 id="org1d90826"><span class="section-number-4">1.2.5.</span> sarif-cli</h4>
+<div class="outline-text-4" id="text-1-2-5">
+</div>
+<div id="outline-container-org21cdd2a" class="outline-5">
+<h5 id="org21cdd2a"><span class="section-number-5">1.2.5.1.</span> Setup / local install</h5>
+<div class="outline-text-5" id="text-1-2-5-1">
+<p>
+Clone <a href="https://github.com/hohn/sarif-cli">https://github.com/hohn/sarif-cli</a> or
+<a href="https://github.com/knewbury01/sarif-cli">https://github.com/knewbury01/sarif-cli</a> 
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+git clone git@github.com:hohn/sarif-cli.git
+
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/sarif-cli
+python3.9 -m venv .venv
+<span style="color: #483d8b;">.</span> .venv/bin/activate
+
+python -m pip install -r requirementsDEV.txt
+
+<span style="color: #b22222;"># </span><span style="color: #b22222;">Put bin/ contents into venv PATH</span>
+pip install -e .
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org3618539" class="outline-5">
+<h5 id="org3618539"><span class="section-number-5">1.2.5.2.</span> Compiler-style textual output from SARIF</h5>
+<div class="outline-text-5" id="text-1-2-5-2">
+<p>
+The sarif-cli has several script to use from the shell level:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/sarif-cli
+ls -1 bin/
+</pre>
+</div>
+
+<pre class="example" id="org7df5b26">
+json-to-yaml
+sarif-aggregate-scans
+sarif-create-aggregate-report
+sarif-digest
+sarif-extract-multi
+sarif-extract-scans
+sarif-extract-scans-runner
+sarif-extract-tables
+sarif-labeled
+sarif-list-files
+sarif-pad-aggregate
+sarif-results-summary
+sarif-to-dot
+</pre>
+
+<p>
+The simplest one just list the source files found during analysis:
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">.</span> ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+sarif-list-files d548189.sarif 
+</pre>
+</div>
+
+<pre class="example">
+src/buffer_overflow.h
+src/use_after_free.h
+src/vuln_driver.c
+</pre>
+
+
+<p>
+Much more useful is a compiler-style summary of all results found: 
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">.</span> ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+sarif-results-summary  d548189.sarif
+</pre>
+</div>
+
+<pre class="example" id="orgea49c9f">
+RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+PATH 0
+FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+The dangling pointer is used here: [fn](2)
+The dangling pointer is used here: [arg](3)
+The dangling pointer is used here: [fn](4)
+The dangling pointer is used here: [arg](5)
+
+</pre>
+
+<p>
+This sarif file has only two results, so the output is short:
+</p>
+
+<pre class="example" id="orga154e7d">
+RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+PATH 0
+FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+The dangling pointer is used here: [fn](2)
+The dangling pointer is used here: [arg](3)
+The dangling pointer is used here: [fn](4)
+The dangling pointer is used here: [arg](5)
+</pre>
+
+<p>
+This illustrates the differences in the output between the two result <code>@kind</code>
+s:
+</p>
+<ul class="org-ul">
+<li><code>@kind problem</code> is a single list of results found</li>
+<li><code>@kind path-problem</code> is a list of flow paths.  Each path in turn is a list
+of locations.</li>
+</ul>
+
+<p>
+Most of these scripts take options that significantly change their output; to
+see them, use the <code>-h</code> or <code>--help</code> flags.  E.g.,
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">.</span> ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+sarif-results-summary -h
+</pre>
+</div>
+
+<pre class="example" id="org183453f">
+usage: sarif-results-summary [-h] [-s srcroot] [-r] [-e] [-c] sarif-file
+
+summary of results
+
+positional arguments:
+  sarif-file            input file, - for stdin
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -s srcroot, --list-source srcroot
+                        list source snippets using srcroot as sarif SRCROOT
+  -r, --related-locations
+                        list related locations like "hides [parameter](1)"
+  -e, --endpoints-only  only list source and sink, dropping the path.
+                        Identical, successive source/sink pairs are combined
+  -c, --csv             output csv instead of human-readable summary
+</pre>
+
+<p>
+Some of these make output much more informative, like <code>-r</code> and <code>-s</code>:
+</p>
+
+<p>
+With <code>-r</code>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">.</span> ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+sarif-results-summary -r d548189.sarif
+</pre>
+</div>
+
+<pre class="example" id="org61678b2">
+RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+REFERENCE: src/buffer_overflow.h:20:17:20:23: memcpy
+REFERENCE: src/buffer_overflow.h:8:22:8:33: stack buffer
+PATH 0
+FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+
+RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+The dangling pointer is used here: [fn](2)
+The dangling pointer is used here: [arg](3)
+The dangling pointer is used here: [fn](4)
+The dangling pointer is used here: [arg](5)
+REFERENCE: src/use_after_free.h:84:22:84:24: fn
+REFERENCE: src/use_after_free.h:87:70:87:72: fn
+REFERENCE: src/use_after_free.h:87:90:87:93: arg
+REFERENCE: src/use_after_free.h:89:20:89:22: fn
+REFERENCE: src/use_after_free.h:89:39:89:42: arg
+
+</pre>
+
+<p>
+If the source code is available, we can use <code>-s</code> to include snippets in the
+output.  This effectively converts sarif to the format used by gcc and clang
+to report warnings and errors.
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">.</span> ~/local/codeql-cli-end-to-end/sarif-cli/.venv/bin/activate
+<span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+sarif-results-summary  -s vulnerable_linux_driver/ d548189.sarif
+</pre>
+</div>
+
+<pre class="example" id="org0143d2b">
+RESULT: src/buffer_overflow.h:20:43:20:47: User-controlled size argument in call to [memcpy](1) copying to a [stack buffer](2)
+                memcpy(kernel_buff, buff, size);
+                                          ^^^^
+PATH 0
+FLOW STEP 0: src/vuln_driver.c:17:73:17:77: args
+static long do_ioctl(struct file *filp, unsigned int cmd, unsigned long args)
+                                                                        ^^^^
+FLOW STEP 1: src/vuln_driver.c:28:20:28:33: args
+   buffer_overflow((char *) args);
+                   ^^^^^^^^^^^^^
+FLOW STEP 2: src/buffer_overflow.h:6:42:6:46: buff
+ static int buffer_overflow(char __user *buff)
+                                         ^^^^
+FLOW STEP 3: src/buffer_overflow.h:20:43:20:47: size
+                memcpy(kernel_buff, buff, size);
+                                          ^^^^
+
+RESULT: src/use_after_free.h:28:11:28:25: The dangling pointer is used here: [fn](1)
+The dangling pointer is used here: [fn](2)
+The dangling pointer is used here: [arg](3)
+The dangling pointer is used here: [fn](4)
+The dangling pointer is used here: [arg](5)
+ uaf_obj *global_uaf_obj = NULL;
+          ^^^^^^^^^^^^^^
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org40c6aa6" class="outline-5">
+<h5 id="org40c6aa6"><span class="section-number-5">1.2.5.3.</span> SQL conversion &#x2013; not compatible with codeql v2.13.4</h5>
+<div class="outline-text-5" id="text-1-2-5-3">
+<p>
+The ultimate purpose of the sarif-cli is producing CSV files for import into
+SQL databases.  This requires a completely defined static structure, without
+any optional fields.  The internals of the tool are beyond the scope of this
+workshop, some details are their external effects are important:
+</p>
+
+<ol class="org-ol">
+<li>a (very large and comprehensive) type signature is defined in sarif-cli</li>
+<li>sarif files that have extra fields not in the signature will produce warnings</li>
+<li>sarif files that are missing fields from the signature will produce a fatal 
+error.  A message will be printed and the scripts will abort.</li>
+<li>Sometimes, sarif files will have a field but no content.  For a number of
+these, dummy values are inserted.  One example are queries that don't
+produce line numbers in their output; for those, -1 is used as value.</li>
+</ol>
+
+<p>
+Unfortunately, this version of codeql
+</p>
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">cd</span> ~/local/codeql-cli-end-to-end
+./codeql/codeql --version
+</pre>
+</div>
+
+<pre class="example">
+CodeQL command-line toolchain release 2.13.4.
+Copyright (C) 2019-2023 GitHub, Inc.
+Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+   Analysis results depend critically on separately distributed query and
+   extractor modules. To list modules that are visible to the toolchain,
+   use 'codeql resolve qlpacks' and 'codeql resolve languages'.
+</pre>
+
+
+<p>
+has signature changes incompatible with (the older) sarif-cli (version
+e62c351) 
+</p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org068b6ca" class="outline-3">
+<h3 id="org068b6ca"><span class="section-number-3">1.3.</span> Running sequence</h3>
+<div class="outline-text-3" id="text-1-3">
+</div>
+<div id="outline-container-org3babbb7" class="outline-4">
+<h4 id="org3babbb7"><span class="section-number-4">1.3.1.</span> Smallest query suite to largest</h4>
+<div class="outline-text-4" id="text-1-3-1">
+<p>
+A short script to show us how many queries the standard suites have:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh"><span style="color: #483d8b;">export</span> <span style="color: #a0522d;">PATH</span>=$<span style="color: #a0522d;">HOME</span>/local/codeql-cli-end-to-end/codeql:<span style="color: #8b2252;">"$PATH"</span>
+
+<span style="color: #a0522d;">queries</span>=<span style="color: #ff00ff;">`codeql resolve queries 2&gt;&amp;1 | grep cpp | awk '{print($1)}'`</span>
+(
+    <span style="color: #a020f0;">for</span> suite<span style="color: #a020f0;"> in</span> $<span style="color: #a0522d;">queries</span>
+    <span style="color: #a020f0;">do</span>
+        <span style="color: #a0522d;">len</span>=<span style="color: #ff00ff;">`codeql resolve queries $suite | wc -l`</span>
+        <span style="color: #483d8b;">echo</span> <span style="color: #8b2252;">"Suite $suite has $len queries"</span>
+    <span style="color: #a020f0;">done</span>
+) 2&gt;/dev/null
+</pre>
+</div>
+
+<pre class="example">
+Suite cpp-code-scanning.qls has       47 queries
+Suite cpp-lgtm-full.qls has      169 queries
+Suite cpp-lgtm.qls has      100 queries
+Suite cpp-security-and-quality.qls has      167 queries
+Suite cpp-security-experimental.qls has      118 queries
+Suite cpp-security-extended.qls has       83 queries
+</pre>
+
+
+<p>
+If we want to gradually increase coverage using the standard suites, we would
+thus use them in this order:
+</p>
+<ul class="org-ul">
+<li>cpp-code-scanning.qls, 47 queries</li>
+<li>cpp-security-extended.qls, 83 queries</li>
+<li>cpp-lgtm.qls, 100 queries</li>
+<li>cpp-security-experimental.qls, 118 queries</li>
+<li>cpp-security-and-quality.qls, 167 queries</li>
+<li>cpp-lgtm-full.qls, 169 queries</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgb041822" class="outline-4">
+<h4 id="orgb041822"><span class="section-number-4">1.3.2.</span> Working with results based on counts</h4>
+<div class="outline-text-4" id="text-1-3-2">
+<ul class="org-ul">
+<li><p>
+Lots of result (&gt; 5000) 
+</p>
+
+<p>
+Use the <a href="#org1d90826">sarif-cli</a>, e.g., <code>sarif-results-summary -r d548189.sarif</code>, as above.
+</p></li>
+
+<li><p>
+Medium result sets (~ 2000 results) 
+</p>
+
+<p>
+Use the <a href="#org1d90826">sarif-cli</a> or try the <a href="#org5d82255">SARIF viewer plugin</a>.
+</p></li>
+
+<li><p>
+Few results 
+</p>
+
+<p>
+Use the <a href="#org5d82255">SARIF viewer plugin</a> for detailed review and working with the results
+/ queries.  Use the <a href="#org1d90826">sarif-cli</a> for quick command-line comparison.
+</p></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgfa04b9a" class="outline-3">
+<h3 id="orgfa04b9a"><span class="section-number-3">1.4.</span> Comparing analysis results across sarif files</h3>
+<div class="outline-text-3" id="text-1-4">
+<p>
+Use the <a href="#org1d90826">sarif-cli</a>.
+</p>
+
+<p>
+Options:
+</p>
+<ul class="org-ul">
+<li>use <code>sarif-results-summary</code> on each sarif result file individually, then
+compare the resulting text files via <code>diff</code>-style tools</li>
+<li>(powerful, but effort required) if your version of CodeQL is compatible, use
+<code>sarif-extract-scans-runner</code> to put all results into an SQL database and use
+that to query the results.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org0e1cf7b" class="outline-3">
+<h3 id="org0e1cf7b"><span class="section-number-3">1.5.</span> Miscellany</h3>
+<div class="outline-text-3" id="text-1-5">
+<ul class="org-ul">
+<li>Scale factor for building DBs: Common case: 15 minutes for a parallel cpp
+compilation can be a 2 hour database build for codeql.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Michael Hohn</p>
+<p class="date">Created: 2023-06-21 Wed 21:05</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
