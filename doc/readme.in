@@ -909,11 +909,20 @@ git checkout 203343df
     - cpp-security-and-quality.qls, 167 queries
     - cpp-lgtm-full.qls, 169 queries    
 
-*** Check result counts
-    - Lots of result (> 5000) -> cli review via compiler-style dump.
-    - Medium result sets (~ 2000) (sarif review plugin, can only load 5000
-      results) 
-    - Few results (sarif review plugin, can only load 5000 results)
+*** Working with results based on counts
+    - Lots of result (> 5000) 
+
+      Use the [[*sarif-cli][sarif-cli]], e.g., =sarif-results-summary -r d548189.sarif=, as above.
+
+    - Medium result sets (~ 2000 results) 
+
+      Use the [[*sarif-cli][sarif-cli]] or try the [[*SARIF viewer plugin][SARIF viewer plugin]].
+
+    - Few results 
+
+      Use the [[*SARIF viewer plugin][SARIF viewer plugin]] for detailed review and working with the results
+      / queries.  Use the [[*sarif-cli][sarif-cli]] for quick command-line comparison.
+
 *** Expand query 
 ** Compare results.
 *** sarif-cli using compiler-style dump
