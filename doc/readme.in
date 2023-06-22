@@ -923,9 +923,16 @@ git checkout 203343df
       Use the [[*SARIF viewer plugin][SARIF viewer plugin]] for detailed review and working with the results
       / queries.  Use the [[*sarif-cli][sarif-cli]] for quick command-line comparison.
 
-*** Expand query 
-** Compare results.
-*** sarif-cli using compiler-style dump
+** Comparing analysis results across sarif files
+   Use the [[*sarif-cli][sarif-cli]].
+
+   Options:
+   - use =sarif-results-summary= on each sarif result file individually, then
+     compare the resulting text files via =diff=-style tools
+   - (powerful, but effort required) if your version of CodeQL is compatible, use
+     =sarif-extract-scans-runner= to put all results into an SQL database and use
+     that to query the results. 
+
 ** Miscellany
    - Scale factor for building DBs: Common case: 15 minutes for a parallel cpp
      compilation can be a 2 hour database build for codeql.
