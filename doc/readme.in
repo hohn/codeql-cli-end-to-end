@@ -1,4 +1,4 @@
-# -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
+ -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
 #+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
 #+OPTIONS: org-confirm-babel-evaluate:nil
 
@@ -359,12 +359,200 @@
 
      #+INCLUDE: "../custom-suite-1.qls" src yaml
 
-**** TODO Include versioning:
-***** TODO codeql cli
-***** TODO query set version
-      Checks:
-**** For building DBs: Common case: 15 minutes for || cpp compilation, can
-     be 2 h with codeql.
+*** The importance of versioning
+**** TODO CodeQL cli version
+     XX: for the sarif-cli
+     The CLI versions used against development of the CLI support were: 2.6.3,
+     2.9.4, and 2.11.4.
+
+**** Database version
+     An attempt to run an analysis with an older version of the cli against a
+     database created with a newer cli version will likely abort with an error.
+
+     In terms of commands, the codeql versions used for
+     #+BEGIN_SRC sh 
+       codeql database create ...
+     #+END_SRC
+     and
+     #+BEGIN_SRC sh
+       codeql database analyze ..
+     #+END_SRC
+     should be the same.
+
+     If you just have a collection of databases, you can check what version of
+     the cli produced it.
+     The database directory contains the codeql version used in a yaml file,
+     a human-readable check:
+     #+BEGIN_SRC sh :exports both :results output
+       cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+       grep -A 2 creationMetadata  vulnerable-linux-driver-db/codeql-database.yml 
+     #+END_SRC
+
+     #+RESULTS:
+     : creationMetadata:
+     :   cliVersion: 2.13.0
+     :   creationTime: 2023-04-24T21:39:15.963711665Z
+
+**** Query set version
+     - For suites in our own source code
+
+         Your query sets /may/ have release versions or tags.  But they almost
+         certainly have git commit ids that can be used, like the following:
+         #+BEGIN_SRC sh :exports both :results output
+           cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+           git rev-parse --short HEAD
+         #+END_SRC
+
+         #+RESULTS:
+         : d548189
+
+         If you use packs, you can fix the ids of dependencies in the =qlpack.yml=
+         file.  In our example, this is done in several places.  The =common=
+         version:
+         #+BEGIN_SRC sh :exports both :results output
+           cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+           cat common/qlpack.yml 
+         #+END_SRC
+
+         #+RESULTS:
+         : ---
+         : library: true
+         : name: common
+         : version: 0.0.1
+         : dependencies:
+         :   codeql/cpp-all: 0.7.0
+
+         The dependencies are transitive; both =queries= and =solutions= depend on
+         =common=, so packs fixed by common also fix packs used by the others.
+         And =common= is fixed by our =git= id, so we're done.
+
+     - Some optional details
+
+         We have specified these packs:
+         #+BEGIN_SRC sh :exports both :results output
+           cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+           grep codeql/cpp-all */qlpack.yml
+         #+END_SRC
+
+         #+RESULTS:
+         : common/qlpack.yml:  codeql/cpp-all: 0.7.0
+         : queries/qlpack.yml:  codeql/cpp-all: ^0.7.0
+
+         The caret notation =^= means "at least".  So at least version 0.7.0. 
+
+         After we install packs via
+         #+begin_src sh 
+           codeql pack install --no-strict-mode ...
+         #+end_src
+         some lock files are generated, and those fix versions further down the
+         dependency chain:
+         #+begin_src sh :exports both :results output
+           cd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
+           cat common/codeql-pack.lock.yml
+         #+end_src
+
+         #+results:
+         #+begin_example
+         ---
+         lockversion: 1.0.0
+         dependencies:
+           codeql/cpp-all:
+             version: 0.7.0
+           codeql/ssa:
+             version: 0.0.15
+           codeql/tutorial:
+             version: 0.0.8
+           codeql/util:
+             version: 0.0.8
+         compiled: false
+         #+end_example
+
+     - Note that a query suite is always in a codeql pack, so the pack id is also
+       the suite id.
+
+       For example, above we copied a suite and resolved it:
+       #+begin_src sh :exports both :results output
+         cd ~/local/codeql-cli-end-to-end
+         cp custom-suite-1.qls codeql-workshop-vulnerable-linux-driver/solutions/
+         codeql resolve queries \
+                codeql-workshop-vulnerable-linux-driver/solutions/custom-suite-1.qls
+       #+end_src
+       #+results:
+       : /users/hohn/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver/solutions/useafterfree.ql
+
+       To assign a version number, we can use the revision id:
+       #+begin_src sh :exports both :results output
+         cd ~/local/codeql-cli-end-to-end
+         git rev-parse --short head
+       #+end_src
+
+       #+RESULTS:
+       : 94fd0a3
+
+     - For manually selected library suites
+
+       For a library suite, we can use the pack id.  For example, we can 
+       list the packs
+       #+BEGIN_SRC sh :exports both :results output
+         export PATH=$HOME/local/codeql-cli-end-to-end/codeql:"$PATH"
+         codeql resolve qlpacks | grep cpp
+       #+END_SRC
+
+       #+RESULTS:
+       : codeql/cpp-all (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-all/0.7.3)
+       : codeql/cpp-examples (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-examples/0.0.0)
+       : codeql/cpp-queries (/Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3)
+
+       Following the last one, we can find some query suites manually.
+       The pack is already known; 0.6.3.
+       #+BEGIN_SRC sh :exports both :results output
+         find ~/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3 \
+              -name "*.qls"
+       #+END_SRC
+      
+       #+RESULTS:
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-extended.qls
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-and-quality.qls
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-security-experimental.qls
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-code-scanning.qls
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-lgtm-full.qls
+       : /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/codeql-suites/cpp-lgtm.qls
+
+     - For predefined suites from =codeql resolve queries=
+
+       A full list of suites is produced via =codeql resolve queries=, here is a
+       filtered version.
+       #+BEGIN_SRC sh :exports both :results output
+         export PATH=$HOME/local/codeql-cli-end-to-end/codeql:"$PATH"
+         codeql resolve queries 2>&1  | grep cpp
+       #+END_SRC
+
+       #+RESULTS:
+       :   cpp-code-scanning.qls - Standard Code Scanning queries for C and C++
+       :   cpp-lgtm-full.qls - Standard LGTM queries for C/C++, including ones not displayed by default
+       :   cpp-lgtm.qls - Standard LGTM queries for C/C++
+       :   cpp-security-and-quality.qls - Security-and-quality queries for C and C++
+       :   cpp-security-experimental.qls - Extended and experimental security queries for C and C++
+       :   cpp-security-extended.qls - Security-extended queries for C and C++
+
+       The following just counts the list but notice the header output has version
+       info reported on =stderr=:
+       #+BEGIN_SRC sh :exports both :results output
+         export PATH=$HOME/local/codeql-cli-end-to-end/codeql:"$PATH"
+         ( codeql resolve queries cpp-code-scanning.qls | wc ) 2>&1
+       #+END_SRC
+
+       #+RESULTS:
+       : Recording pack reference codeql/cpp-queries at /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3.
+       : Recording pack reference codeql/suite-helpers at /Users/hohn/local/codeql-cli-end-to-end/codeql/qlpacks/codeql/cpp-queries/0.6.3/.codeql/libraries/codeql/suite-helpers/0.5.3.
+       :       47      65    5813
+
+       So we can use the codeql/cpp-queries version, 0.6.3, if we run the
+       =cpp-code-scanning.qls= query suite.
+
+    The difference in the last two approaches is the way the suite is chosen.  The
+    version number will be the same.
+
 ** Review results
 *** SARIF Documentation
     The standard is defined at
@@ -667,7 +855,6 @@ git checkout 203343df
        ./codeql/codeql --version
      #+END_SRC
 
-     #+RESULTS:
      : CodeQL command-line toolchain release 2.13.4.
      : Copyright (C) 2019-2023 GitHub, Inc.
      : Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
@@ -698,3 +885,6 @@ git checkout 203343df
 *** Expand query 
 ** Compare results.
 *** sarif-cli using compiler-style dump
+** Miscellany
+   - Scale factor for building DBs: Common case: 15 minutes for a parallel cpp
+     compilation can be a 2 hour database build for codeql.
