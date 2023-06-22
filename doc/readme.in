@@ -1,5 +1,5 @@
 # -*- mode: org; org-confirm-babel-evaluate: nil; coding: utf-8 -*-
-#+OPTIONS: H:3 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
+#+OPTIONS: H:4 num:t \n:nil @:t ::t |:t ^:{} f:t *:t TeX:t LaTeX:t skip:nil p:nil
 #+OPTIONS: org-confirm-babel-evaluate:nil
 
 # readme.in is the (partial) literate program used to generate readme.org
@@ -8,7 +8,7 @@
 
 ** Run analyses
 *** Get collection of databases (already handy)
-**** DONE Get https://github.com/hohn/codeql-workshop-vulnerable-linux-driver
+**** Get https://github.com/hohn/codeql-workshop-vulnerable-linux-driver
      #+begin_src text
        cd ~/local
        git clone git@github.com:hohn/codeql-workshop-vulnerable-linux-driver.git
@@ -25,15 +25,16 @@
 
        3 directories, 4 files
      #+end_src
-**** DONE Quick check using VS Code.  Same steps will repeat:
-***** select DB
-***** select query
-***** run query
-***** view results
-**** DONE Install codeql
-***** Full docs:
-      https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli
-      https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
+**** Quick check using VS Code
+     The same steps will repeat for the cli.
+     - select DB
+     - select query
+     - run query
+     - view results
+**** Install codeql
+***** Full docs
+      - https://docs.github.com/en/code-security/codeql-cli/using-the-codeql-cli/getting-started-with-the-codeql-cli#getting-started-with-the-codeql-cli
+      - https://docs.github.com/en/code-security/code-scanning/using-codeql-code-scanning-with-your-existing-ci-system/installing-codeql-cli-in-your-ci-system#setting-up-the-codeql-cli-in-your-ci-system
 ***** In short:
       #+begin_src sh
         cd ~/local/codeql-cli-end-to-end
@@ -123,23 +124,23 @@
 ***** Most flexible in use, but more initial setup
       =gh=, the GitHub command-line tool from https://github.com/cli/cli
 
-****** gh api repos/{owner}/{repo}/releases
-       https://cli.github.com/manual/gh_api
-****** gh extension create
-       https://cli.github.com/manual/gh_extension
-****** gh codeql extension
-       https://github.com/github/gh-codeql
-****** gh gist list
-       https://cli.github.com/manual/gh_gist_list
+      - gh api repos/{owner}/{repo}/releases
+        https://cli.github.com/manual/gh_api
+      - gh extension create
+        https://cli.github.com/manual/gh_extension
+      - gh codeql extension
+        https://github.com/github/gh-codeql
+      - gh gist list
+        https://cli.github.com/manual/gh_gist_list
 
-       #+begin_src text
-         0:$ gh codeql
-         GitHub command-line wrapper for the CodeQL CLI.
-       #+end_src
+        #+begin_src text
+          0:$ gh codeql
+          GitHub command-line wrapper for the CodeQL CLI.
+        #+end_src
 **** Install pack dependencies
 ***** Full docs
-      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
-      https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install
+      - https://docs.github.com/en/code-security/codeql-cli/codeql-cli-reference/about-codeql-packs#about-qlpackyml-files
+      - https://docs.github.com/en/code-security/codeql-cli/codeql-cli-manual/pack-install
 ***** View installed docs via =-h= flag, highly recommended
       #+begin_src sh
         # Overview
@@ -194,7 +195,7 @@
        #+END_SRC
 
        After the initial setup and for automation, install each pack's
-       dependencies via a loop: =codeql pack install=
+       dependencies via a loop using =codeql pack install=
        #+begin_src sh
          pushd ~/local/codeql-cli-end-to-end/codeql-workshop-vulnerable-linux-driver
          find . -name "qlpack.yml"
@@ -360,10 +361,23 @@
      #+INCLUDE: "../custom-suite-1.qls" src yaml
 
 *** The importance of versioning
-**** TODO CodeQL cli version
-     XX: for the sarif-cli
-     The CLI versions used against development of the CLI support were: 2.6.3,
-     2.9.4, and 2.11.4.
+**** CodeQL cli version
+     # XX: for the sarif-cli
+     # The CLI versions used against development of the CLI support were: 2.6.3,
+     # 2.9.4, and 2.11.4.
+     Easy:
+     #+BEGIN_SRC sh :exports both :results output
+         export PATH=$HOME/local/codeql-cli-end-to-end/codeql:"$PATH"
+         codeql --version
+     #+END_SRC
+
+     #+RESULTS:
+     : CodeQL command-line toolchain release 2.13.4.
+     : Copyright (C) 2019-2023 GitHub, Inc.
+     : Unpacked in: /Users/hohn/local/codeql-cli-end-to-end/codeql
+     :    Analysis results depend critically on separately distributed query and
+     :    extractor modules. To list modules that are visible to the toolchain,
+     :    use 'codeql resolve qlpacks' and 'codeql resolve languages'.
 
 **** Database version
      An attempt to run an analysis with an older version of the cli against a
@@ -601,7 +615,7 @@
 
      Reviewing looks as follows.
      #+ATTR_HTML: :alt sarif viewer :width 90%
-     [[./img/sarif-view-1.png]]
+     [[../img/sarif-view-1.png]]
 
 *** View raw sarif with =jq=
     List the SARIF files again 
@@ -661,7 +675,6 @@
        git clone git@github.com:hohn/sarif-cli.git
 
        cd ~/local/codeql-cli-end-to-end/sarif-cli
-git checkout 203343df
        python3.9 -m venv .venv
        . .venv/bin/activate
 
