@@ -8,4 +8,5 @@
 
   This workshop has pre-rendered material in
   - doc/readme.html :: best quality, for downloading and viewing locally.
+    A fully rendered view is available via https://htmlpreview.github.io/?https://github.com/hohn/codeql-cli-end-to-end/blob/master/doc/readme.html
   - doc/readme.md :: for quick browsing.  Formatting may be limited.
